@@ -32,7 +32,7 @@ func TestLoadMasterClient(t *testing.T) {
 	// Start a local HTTP server
 	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 		// Test request parameters
-		equals(t, req.URL.String(), "/foo&apikey=bar")
+		equals(t, req.URL.String(), "/accessv2")
 		// Send response to be tested
 		rw.Write([]byte(`baz`))
 	}))

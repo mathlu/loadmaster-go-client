@@ -5,12 +5,19 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+        "encoding/json"
+        "bytes"
 )
 
 type Client struct {
 	HttpClient *http.Client
 	ApiKey     string
 	RestUrl    string
+}
+
+type PayLoad struct {
+  apikey string
+  cmd string
 }
 
 func NewClient(apiKey string, restUrl string) *Client {
@@ -22,8 +29,16 @@ func NewClient(apiKey string, restUrl string) *Client {
 	}
 }
 
-func (c *Client) newRequest(path string) (*http.Request, error) {
-	req, err := http.NewRequest("GET", fmt.Sprintf("%s/%s&apikey=%s", c.RestUrl, path, c.ApiKey), nil)
+func (c *Client) newRequest(cmd string) (*http.Request, error) {
+        payload := PayLoad{
+                apikey: c.ApiKey,
+                cmd: cmd,
+        }
+        b,err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
 	if err != nil {
 		return nil, err
 	}
