@@ -1,6 +1,7 @@
 package lmclient
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -15,7 +16,10 @@ func TestGetAllVs(t *testing.T) {
 		// Test request parameters
 		equals(t, req.URL.String(), "/accessv2")
 		// Send response to be tested
-		rw.Write([]byte(content))
+		_, err := rw.Write([]byte(content))
+		if err != nil {
+			fmt.Printf("Write failed: %v", err)
+		}
 	}))
 
 	defer server.Close()

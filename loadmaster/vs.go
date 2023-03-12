@@ -3,9 +3,7 @@ package lmclient
 import "encoding/json"
 
 type Vss struct {
-	code   int
-	VS     []Vs
-	status string
+	VS []Vs
 }
 type Vs struct {
 	Status   string

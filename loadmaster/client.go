@@ -1,12 +1,12 @@
 package lmclient
 
 import (
+	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
-        "encoding/json"
-        "bytes"
 )
 
 type Client struct {
@@ -16,8 +16,8 @@ type Client struct {
 }
 
 type PayLoad struct {
-  apikey string
-  cmd string
+	ApiKey string `json:"apikey"`
+	CMD    string `json:"cmd"`
 }
 
 func NewClient(apiKey string, restUrl string) *Client {
@@ -30,11 +30,11 @@ func NewClient(apiKey string, restUrl string) *Client {
 }
 
 func (c *Client) newRequest(cmd string) (*http.Request, error) {
-        payload := PayLoad{
-                apikey: c.ApiKey,
-                cmd: cmd,
-        }
-        b,err := json.Marshal(payload)
+	payload := PayLoad{
+		ApiKey: c.ApiKey,
+		CMD:    cmd,
+	}
+	b, err := json.Marshal(payload)
 	if err != nil {
 		return nil, err
 	}

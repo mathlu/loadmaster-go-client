@@ -34,7 +34,10 @@ func TestLoadMasterClient(t *testing.T) {
 		// Test request parameters
 		equals(t, req.URL.String(), "/accessv2")
 		// Send response to be tested
-		rw.Write([]byte(`baz`))
+		_, err := rw.Write([]byte(`baz`))
+		if err != nil {
+			fmt.Printf("Write failed: %v", err)
+		}
 	}))
 
 	defer server.Close()
