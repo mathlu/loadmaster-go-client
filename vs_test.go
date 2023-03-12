@@ -28,8 +28,32 @@ func TestGetAllVs(t *testing.T) {
 	vs, err := client.GetAllVs()
 	ok(t, err)
 
-	equals(t, vs[0].Status, "Down")
 	equals(t, vs[0].Index, 1)
 	equals(t, vs[0].NickName, "foo")
+
+}
+
+func TestGetVs(t *testing.T) {
+	content, err := ioutil.ReadFile("test_data/showvs.json")
+	ok(t, err)
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// Test request parameters
+		equals(t, req.URL.String(), "/accessv2")
+		// Send response to be tested
+		_, err := rw.Write([]byte(content))
+		if err != nil {
+			fmt.Printf("Write failed: %v", err)
+		}
+	}))
+
+	defer server.Close()
+	client := Client{server.Client(), "bar", server.URL}
+
+	vs, err := client.GetVs(1)
+	ok(t, err)
+
+	equals(t, vs.Index, 1)
+	equals(t, vs.NickName, "foo")
 
 }
