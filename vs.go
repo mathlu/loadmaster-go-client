@@ -12,14 +12,34 @@ type Vss struct {
 }
 type Vs struct {
 	Status   string `json:"Status"`
-	Index    int
-	NickName string
+	Index    int    `json:"Index"`
+	NickName string `json:"NickName"`
+	Port     string `json:"VSPort"`
+	Protocol string `json:"Protocol"`
+	Address  string `json:"VSAddress"`
 }
 
-type GetVsPayLoad struct {
+type ApiPayLoad struct {
 	ApiKey  string `json:"apikey"`
 	CMD     string `json:"cmd"`
 	VsIndex int    `json:"vs"`
+}
+
+type VsApiPayLoad struct {
+	Vs
+	ApiPayLoad
+}
+
+func (u *Vs) MarshalJSON() ([]byte, error) {
+	return json.Marshal(&struct {
+		Address  string `json:"vs"`
+		Port     string `json:"port"`
+		Protocol string `json:"prot"`
+	}{
+		Address:  u.Address,
+		Port:     u.Port,
+		Protocol: u.Protocol,
+	})
 }
 
 func (c *Client) GetAllVs() ([]Vs, error) {
@@ -43,7 +63,7 @@ func (c *Client) GetAllVs() ([]Vs, error) {
 }
 
 func (c *Client) GetVs(index int) (*Vs, error) {
-	payload := GetVsPayLoad{
+	payload := ApiPayLoad{
 		ApiKey:  c.ApiKey,
 		CMD:     "showvs",
 		VsIndex: index,
@@ -69,5 +89,10 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 		return nil, err
 	}
 
+	return &vs, nil
+}
+
+func (c *Client) CreateVs() (*Vs, error) {
+	var vs Vs
 	return &vs, nil
 }

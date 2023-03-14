@@ -57,3 +57,14 @@ func TestGetVs(t *testing.T) {
 	equals(t, vs.NickName, "foo")
 
 }
+
+func TestMarshalJSON(t *testing.T) {
+	var vs VsApiPayLoad
+	vs.Address = "192.168.1.10"
+	vs.Port = "888"
+	vs.Protocol = "tcp"
+
+	ret, err := vs.MarshalJSON()
+	ok(t, err)
+	equals(t, string(ret), "{\"vs\":\"192.168.1.10\",\"port\":\"888\",\"prot\":\"tcp\"}")
+}
