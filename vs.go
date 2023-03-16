@@ -29,15 +29,19 @@ type VsApiPayLoad struct {
 	ApiPayLoad
 }
 
-func (u *Vs) MarshalJSON() ([]byte, error) {
+func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&struct {
 		Address  string `json:"vs"`
 		Port     string `json:"port"`
 		Protocol string `json:"prot"`
+		ApiKey   string `json:"apikey"`
+		CMD      string `json:"cmd"`
 	}{
 		Address:  u.Address,
 		Port:     u.Port,
 		Protocol: u.Protocol,
+		ApiKey:   u.ApiKey,
+		CMD:      u.CMD,
 	})
 }
 
@@ -92,14 +96,14 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 }
 
 func (c *Client) CreateVs(ip string, proto string, port string) (*Vs, error) {
-	payload := VsApiPayLoad{
-		Vs{Address: ip,
-			Protocol: proto,
-			Port:     port},
-		ApiPayLoad{ApiKey: c.ApiKey,
-			CMD: "addvs"},
-	}
-	b, err := json.Marshal(payload)
+	var vsa VsApiPayLoad
+	vsa.Address = ip
+	vsa.Port = port
+	vsa.Protocol = proto
+	vsa.ApiKey = c.ApiKey
+	vsa.CMD = "addvs"
+
+	b, err := json.Marshal(vsa)
 	if err != nil {
 		return nil, err
 	}

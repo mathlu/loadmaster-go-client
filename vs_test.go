@@ -1,6 +1,7 @@
 package lmclient
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -89,8 +90,10 @@ func TestMarshalJSON(t *testing.T) {
 	vs.Address = "192.168.1.10"
 	vs.Port = "888"
 	vs.Protocol = "tcp"
+	vs.ApiKey = "bar"
+	vs.CMD = "addvs"
 
-	ret, err := vs.MarshalJSON()
+	ret, err := json.Marshal(vs)
 	ok(t, err)
-	equals(t, string(ret), "{\"vs\":\"192.168.1.10\",\"port\":\"888\",\"prot\":\"tcp\"}")
+	equals(t, string(ret), "{\"vs\":\"192.168.1.10\",\"port\":\"888\",\"prot\":\"tcp\",\"apikey\":\"bar\",\"cmd\":\"addvs\"}")
 }
