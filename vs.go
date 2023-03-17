@@ -54,19 +54,13 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 		})
 	case "delvs", "showvs":
 		return json.Marshal(&struct {
-			Index    int    `json:"vs"`
-			Address  string `json:"vsaddress"`
-			Port     string `json:"port"`
-			Protocol string `json:"prot"`
-			ApiKey   string `json:"apikey"`
-			CMD      string `json:"cmd"`
+			Index  int    `json:"vs"`
+			ApiKey string `json:"apikey"`
+			CMD    string `json:"cmd"`
 		}{
-			Index:    u.Index,
-			Address:  u.Address,
-			Port:     u.Port,
-			Protocol: u.Protocol,
-			ApiKey:   u.ApiKey,
-			CMD:      u.CMD,
+			Index:  u.Index,
+			ApiKey: u.ApiKey,
+			CMD:    u.CMD,
 		})
 	case "modvs":
 		return json.Marshal(&struct {
@@ -171,12 +165,11 @@ func (c *Client) CreateVs(ip string, proto string, port string) (*Vs, error) {
 }
 
 func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
-	payload := VsApiPayLoad{
-		Vs{Index: index},
-		ApiPayLoad{ApiKey: c.ApiKey,
-			CMD: "delvs"},
-	}
-	b, err := json.Marshal(payload)
+	var vsa VsApiPayLoad
+	vsa.CMD = "showvs"
+	vsa.ApiKey = c.ApiKey
+	vsa.Index = index
+	b, err := json.Marshal(vsa)
 	if err != nil {
 		return nil, err
 	}
