@@ -37,19 +37,38 @@ type VsApiPayLoad struct {
 }
 
 func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		Address  string `json:"vs"`
-		Port     string `json:"port"`
-		Protocol string `json:"prot"`
-		ApiKey   string `json:"apikey"`
-		CMD      string `json:"cmd"`
-	}{
-		Address:  u.Address,
-		Port:     u.Port,
-		Protocol: u.Protocol,
-		ApiKey:   u.ApiKey,
-		CMD:      u.CMD,
-	})
+	switch u.CMD {
+	case "addvs":
+		return json.Marshal(&struct {
+			Address  string `json:"vs"`
+			Port     string `json:"port"`
+			Protocol string `json:"prot"`
+			ApiKey   string `json:"apikey"`
+			CMD      string `json:"cmd"`
+		}{
+			Address:  u.Address,
+			Port:     u.Port,
+			Protocol: u.Protocol,
+			ApiKey:   u.ApiKey,
+			CMD:      u.CMD,
+		})
+	case "delvs", "modvs", "showvs":
+		return json.Marshal(&struct {
+			Index    int    `json:"vs"`
+			Port     string `json:"port"`
+			Protocol string `json:"prot"`
+			ApiKey   string `json:"apikey"`
+			CMD      string `json:"cmd"`
+		}{
+			Index:    u.Index,
+			Port:     u.Port,
+			Protocol: u.Protocol,
+			ApiKey:   u.ApiKey,
+			CMD:      u.CMD,
+		})
+	default:
+		return nil, errors.New("Unknown CMD")
+	}
 }
 
 func (c *Client) GetAllVs() ([]Vs, error) {
@@ -73,12 +92,11 @@ func (c *Client) GetAllVs() ([]Vs, error) {
 }
 
 func (c *Client) GetVs(index int) (*Vs, error) {
-	payload := VsApiPayLoad{
-		Vs{Index: index},
-		ApiPayLoad{ApiKey: c.ApiKey,
-			CMD: "showvs"},
-	}
-	b, err := json.Marshal(payload)
+	var vsa VsApiPayLoad
+	vsa.CMD = "showvs"
+	vsa.ApiKey = c.ApiKey
+	vsa.Index = index
+	b, err := json.Marshal(vsa)
 	if err != nil {
 		return nil, err
 	}
