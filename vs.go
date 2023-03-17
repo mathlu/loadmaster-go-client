@@ -52,15 +52,33 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			ApiKey:   u.ApiKey,
 			CMD:      u.CMD,
 		})
-	case "delvs", "modvs", "showvs":
+	case "delvs", "showvs":
 		return json.Marshal(&struct {
 			Index    int    `json:"vs"`
+			Address  string `json:"vsaddress"`
 			Port     string `json:"port"`
 			Protocol string `json:"prot"`
 			ApiKey   string `json:"apikey"`
 			CMD      string `json:"cmd"`
 		}{
 			Index:    u.Index,
+			Address:  u.Address,
+			Port:     u.Port,
+			Protocol: u.Protocol,
+			ApiKey:   u.ApiKey,
+			CMD:      u.CMD,
+		})
+	case "modvs":
+		return json.Marshal(&struct {
+			Index    int    `json:"vs"`
+			Address  string `json:"vsaddress"`
+			Port     string `json:"vsport"`
+			Protocol string `json:"prot"`
+			ApiKey   string `json:"apikey"`
+			CMD      string `json:"cmd"`
+		}{
+			Index:    u.Index,
+			Address:  u.Address,
 			Port:     u.Port,
 			Protocol: u.Protocol,
 			ApiKey:   u.ApiKey,
@@ -184,4 +202,37 @@ func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 	}
 
 	return &ar, nil
+}
+
+func (c *Client) ModifyVs(index int, ip string, proto string, port string) (*Vs, error) {
+	var vsa VsApiPayLoad
+	vsa.Index = index
+	vsa.Address = ip
+	vsa.Port = port
+	vsa.Protocol = proto
+	vsa.ApiKey = c.ApiKey
+	vsa.CMD = "modvs"
+
+	b, err := json.Marshal(vsa)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var vs Vs
+	err = json.Unmarshal(resp, &vs)
+	if err != nil {
+		return nil, err
+	}
+
+	return &vs, nil
 }

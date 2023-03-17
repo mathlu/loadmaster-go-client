@@ -111,6 +111,32 @@ func TestCreateVs(t *testing.T) {
 
 }
 
+func TestModifyVs(t *testing.T) {
+	content, err := ioutil.ReadFile("test_data/modvs.json")
+	ok(t, err)
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// Test request parameters
+		equals(t, req.URL.String(), "/accessv2")
+		// Send response to be tested
+		_, err := rw.Write([]byte(content))
+		if err != nil {
+			fmt.Printf("Write failed: %v", err)
+		}
+	}))
+
+	defer server.Close()
+	client := Client{server.Client(), "bar", server.URL}
+
+	vs, err := client.ModifyVs(1, "192.168.1.215", "tcp", "6453")
+	ok(t, err)
+
+	equals(t, vs.Address, "192.168.1.215")
+	equals(t, vs.Protocol, "tcp")
+	equals(t, vs.Port, "6453")
+
+}
+
 func TestMarshalJSON(t *testing.T) {
 	var vs VsApiPayLoad
 	vs.Address = "192.168.1.10"
