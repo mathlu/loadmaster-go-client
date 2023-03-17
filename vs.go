@@ -3,6 +3,7 @@ package lmclient
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -22,6 +23,12 @@ type Vs struct {
 type ApiPayLoad struct {
 	ApiKey string `json:"apikey"`
 	CMD    string `json:"cmd"`
+}
+
+type ApiResponse struct {
+	Code    int    `json:"code"`
+	Message string `json:"message"`
+	Status  string `json:"status"`
 }
 
 type VsApiPayLoad struct {
@@ -125,4 +132,38 @@ func (c *Client) CreateVs(ip string, proto string, port string) (*Vs, error) {
 	}
 
 	return &vs, nil
+}
+
+func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
+	payload := VsApiPayLoad{
+		Vs{Index: index},
+		ApiPayLoad{ApiKey: c.ApiKey,
+			CMD: "delvs"},
+	}
+	b, err := json.Marshal(payload)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := c.doRequest(req)
+	if err != nil {
+		return nil, err
+	}
+
+	var ar ApiResponse
+	err = json.Unmarshal(resp, &ar)
+	if err != nil {
+		return nil, err
+	}
+
+	if ar.Status != "ok" {
+		return nil, errors.New("Code: " + fmt.Sprint(ar.Code) + " Message:" + ar.Message)
+	}
+
+	return &ar, nil
 }

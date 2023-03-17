@@ -59,6 +59,32 @@ func TestGetVs(t *testing.T) {
 
 }
 
+func TestDelVs(t *testing.T) {
+	content, err := ioutil.ReadFile("test_data/delvs.json")
+	ok(t, err)
+	// Start a local HTTP server
+	server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		// Test request parameters
+		equals(t, req.URL.String(), "/accessv2")
+		// Send response to be tested
+		_, err := rw.Write([]byte(content))
+		if err != nil {
+			fmt.Printf("Write failed: %v", err)
+		}
+	}))
+
+	defer server.Close()
+	client := Client{server.Client(), "bar", server.URL}
+
+	ar, err := client.DeleteVs(1)
+	ok(t, err)
+
+	equals(t, ar.Status, "ok")
+	equals(t, ar.Message, "Command completed ok")
+	equals(t, ar.Code, 200)
+
+}
+
 func TestCreateVs(t *testing.T) {
 	content, err := ioutil.ReadFile("test_data/addvs.json")
 	ok(t, err)
