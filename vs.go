@@ -166,7 +166,7 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 
 func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 	var vsa VsApiPayLoad
-	vsa.CMD = "showvs"
+	vsa.CMD = "delvs"
 	vsa.ApiKey = c.ApiKey
 	vsa.Index = index
 	b, err := json.Marshal(vsa)
