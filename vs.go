@@ -132,11 +132,11 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 	return &vs, nil
 }
 
-func (c *Client) CreateVs(ip string, proto string, port string) (*Vs, error) {
+func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	var vsa VsApiPayLoad
-	vsa.Address = ip
-	vsa.Port = port
-	vsa.Protocol = proto
+	vsa.Address = v.Address
+	vsa.Port = v.Port
+	vsa.Protocol = v.Protocol
 	vsa.ApiKey = c.ApiKey
 	vsa.CMD = "addvs"
 

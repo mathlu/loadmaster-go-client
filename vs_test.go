@@ -102,7 +102,13 @@ func TestCreateVs(t *testing.T) {
 	defer server.Close()
 	client := Client{server.Client(), "bar", server.URL}
 
-	vs, err := client.CreateVs("192.168.1.235", "tcp", "6443")
+	v := &Vs{
+		Address:  "192.168.1.235",
+		Protocol: "tcp",
+		Port:     "6443",
+	}
+
+	vs, err := client.CreateVs(v)
 	ok(t, err)
 
 	equals(t, vs.Address, "192.168.1.235")
