@@ -20,6 +20,9 @@ type Vs struct {
 	NickName string `json:"NickName"`
 	Layer    int    `json:"Layer"`
 	Enable   bool   `json:"Enable"`
+	Type     string `json:"VStype"`
+	ForceL4  bool   `json:"ForceL4"`
+	ForceL7  bool   `json:"ForceL7"`
 }
 
 type ApiPayLoad struct {
@@ -49,6 +52,9 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			CMD      string `json:"cmd"`
 			NickName string `json:"NickName"`
 			Enable   bool   `json:"Enable"`
+			Type     string `json:"VStype"`
+			ForceL4  bool   `json:"ForceL4"`
+			ForceL7  bool   `json:"ForceL7"`
 		}{
 			Address:  u.Address,
 			Port:     u.Port,
@@ -57,6 +63,9 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			CMD:      u.CMD,
 			NickName: u.NickName,
 			Enable:   u.Enable,
+			Type:     u.Type,
+			ForceL4:  u.ForceL4,
+			ForceL7:  u.ForceL7,
 		})
 	case "delvs", "showvs":
 		return json.Marshal(&struct {
@@ -78,6 +87,9 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			CMD      string `json:"cmd"`
 			NickName string `json:"NickName"`
 			Enable   bool   `json:"Enable"`
+			Type     string `json:"VStype"`
+			ForceL4  bool   `json:"ForceL4"`
+			ForceL7  bool   `json:"ForceL7"`
 		}{
 			Index:    u.Index,
 			Address:  u.Address,
@@ -87,6 +99,9 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			CMD:      u.CMD,
 			NickName: u.NickName,
 			Enable:   u.Enable,
+			Type:     u.Type,
+			ForceL4:  u.ForceL4,
+			ForceL7:  u.ForceL7,
 		})
 	default:
 		return nil, errors.New("Unknown CMD")
@@ -149,6 +164,9 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	vsa.Protocol = v.Protocol
 	vsa.NickName = v.NickName
 	vsa.Enable = v.Enable
+	vsa.Type = v.Type
+	vsa.ForceL4 = v.ForceL4
+	vsa.ForceL7 = v.ForceL7
 	vsa.ApiKey = c.ApiKey
 	vsa.CMD = "addvs"
 
@@ -218,6 +236,9 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 	vsa.ApiKey = c.ApiKey
 	vsa.NickName = v.NickName
 	vsa.Enable = v.Enable
+	vsa.Type = v.Type
+	vsa.ForceL4 = v.ForceL4
+	vsa.ForceL7 = v.ForceL7
 	vsa.CMD = "modvs"
 
 	b, err := json.Marshal(vsa)
