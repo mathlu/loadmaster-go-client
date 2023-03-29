@@ -133,8 +133,14 @@ func TestModifyVs(t *testing.T) {
 
 	defer server.Close()
 	client := Client{server.Client(), "bar", server.URL}
+	v := &Vs{
+		Index:    1,
+		Address:  "192.168.1.215",
+		Protocol: "tcp",
+		Port:     "6443",
+	}
 
-	vs, err := client.ModifyVs(1, "192.168.1.215", "tcp", "6453")
+	vs, err := client.ModifyVs(v)
 	ok(t, err)
 
 	equals(t, vs.Address, "192.168.1.215")
@@ -153,5 +159,5 @@ func TestMarshalJSON(t *testing.T) {
 
 	ret, err := json.Marshal(vs)
 	ok(t, err)
-	equals(t, string(ret), "{\"vs\":\"192.168.1.10\",\"port\":\"888\",\"prot\":\"tcp\",\"apikey\":\"bar\",\"cmd\":\"addvs\"}")
+	equals(t, string(ret), "{\"vs\":\"192.168.1.10\",\"port\":\"888\",\"prot\":\"tcp\",\"apikey\":\"bar\",\"cmd\":\"addvs\",\"NickName\":\"\",\"Layer\":0,\"Enable\":false}")
 }

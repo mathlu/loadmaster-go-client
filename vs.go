@@ -14,10 +14,12 @@ type Vss struct {
 type Vs struct {
 	Status   string `json:"Status"`
 	Index    int    `json:"Index"`
-	NickName string `json:"NickName"`
 	Port     string `json:"VSPort"`
 	Protocol string `json:"Protocol"`
 	Address  string `json:"VSAddress"`
+	NickName string `json:"NickName"`
+	Layer    int    `json:"Layer"`
+	Enable   bool   `json:"Enable"`
 }
 
 type ApiPayLoad struct {
@@ -45,12 +47,18 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			Protocol string `json:"prot"`
 			ApiKey   string `json:"apikey"`
 			CMD      string `json:"cmd"`
+			NickName string `json:"NickName"`
+			Layer    int    `json:"Layer"`
+			Enable   bool   `json:"Enable"`
 		}{
 			Address:  u.Address,
 			Port:     u.Port,
 			Protocol: u.Protocol,
 			ApiKey:   u.ApiKey,
 			CMD:      u.CMD,
+			NickName: u.NickName,
+			Layer:    u.Layer,
+			Enable:   u.Enable,
 		})
 	case "delvs", "showvs":
 		return json.Marshal(&struct {
@@ -70,6 +78,9 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			Protocol string `json:"prot"`
 			ApiKey   string `json:"apikey"`
 			CMD      string `json:"cmd"`
+			NickName string `json:"NickName"`
+			Layer    int    `json:"Layer"`
+			Enable   bool   `json:"Enable"`
 		}{
 			Index:    u.Index,
 			Address:  u.Address,
@@ -77,6 +88,9 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			Protocol: u.Protocol,
 			ApiKey:   u.ApiKey,
 			CMD:      u.CMD,
+			NickName: u.NickName,
+			Layer:    u.Layer,
+			Enable:   u.Enable,
 		})
 	default:
 		return nil, errors.New("Unknown CMD")
@@ -137,6 +151,9 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	vsa.Address = v.Address
 	vsa.Port = v.Port
 	vsa.Protocol = v.Protocol
+	vsa.NickName = v.NickName
+	vsa.Layer = v.Layer
+	vsa.Enable = v.Enable
 	vsa.ApiKey = c.ApiKey
 	vsa.CMD = "addvs"
 
@@ -197,13 +214,16 @@ func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 	return &ar, nil
 }
 
-func (c *Client) ModifyVs(index int, ip string, proto string, port string) (*Vs, error) {
+func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 	var vsa VsApiPayLoad
-	vsa.Index = index
-	vsa.Address = ip
-	vsa.Port = port
-	vsa.Protocol = proto
+	vsa.Index = v.Index
+	vsa.Address = v.Address
+	vsa.Port = v.Port
+	vsa.Protocol = v.Protocol
 	vsa.ApiKey = c.ApiKey
+	vsa.NickName = v.NickName
+	vsa.Layer = v.Layer
+	vsa.Enable = v.Enable
 	vsa.CMD = "modvs"
 
 	b, err := json.Marshal(vsa)
