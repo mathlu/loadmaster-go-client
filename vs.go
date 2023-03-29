@@ -48,7 +48,6 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			ApiKey   string `json:"apikey"`
 			CMD      string `json:"cmd"`
 			NickName string `json:"NickName"`
-			Layer    int    `json:"Layer"`
 			Enable   bool   `json:"Enable"`
 		}{
 			Address:  u.Address,
@@ -57,7 +56,6 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			ApiKey:   u.ApiKey,
 			CMD:      u.CMD,
 			NickName: u.NickName,
-			Layer:    u.Layer,
 			Enable:   u.Enable,
 		})
 	case "delvs", "showvs":
@@ -79,7 +77,6 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			ApiKey   string `json:"apikey"`
 			CMD      string `json:"cmd"`
 			NickName string `json:"NickName"`
-			Layer    int    `json:"Layer"`
 			Enable   bool   `json:"Enable"`
 		}{
 			Index:    u.Index,
@@ -89,7 +86,6 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			ApiKey:   u.ApiKey,
 			CMD:      u.CMD,
 			NickName: u.NickName,
-			Layer:    u.Layer,
 			Enable:   u.Enable,
 		})
 	default:
@@ -152,7 +148,6 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	vsa.Port = v.Port
 	vsa.Protocol = v.Protocol
 	vsa.NickName = v.NickName
-	vsa.Layer = v.Layer
 	vsa.Enable = v.Enable
 	vsa.ApiKey = c.ApiKey
 	vsa.CMD = "addvs"
@@ -222,7 +217,6 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 	vsa.Protocol = v.Protocol
 	vsa.ApiKey = c.ApiKey
 	vsa.NickName = v.NickName
-	vsa.Layer = v.Layer
 	vsa.Enable = v.Enable
 	vsa.CMD = "modvs"
 
