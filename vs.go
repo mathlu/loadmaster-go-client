@@ -12,17 +12,22 @@ type Vss struct {
 	VS []Vs
 }
 type Vs struct {
-	Status   string `json:"Status"`
-	Index    int    `json:"Index"`
-	Port     string `json:"VSPort"`
-	Protocol string `json:"Protocol"`
-	Address  string `json:"VSAddress"`
-	NickName string `json:"NickName"`
-	Layer    int    `json:"Layer"`
-	Enable   bool   `json:"Enable"`
-	Type     string `json:"VStype"`
-	ForceL4  bool   `json:"ForceL4"`
-	ForceL7  bool   `json:"ForceL7"`
+	Status        string   `json:"Status"`
+	Index         int      `json:"Index"`
+	Address       string   `json:"VSAddress"`
+	Port          string   `json:"VSPort"`
+	Layer         int      `json:"Layer"`
+	NickName      string   `json:"NickName"`
+	Enable        bool     `json:"Enable"`
+	SSLReverse    bool     `json:"SSLReverse"`
+	SSLReencrypt  bool     `json:"SSLReencrypt"`
+	InterceptMode int      `json:"InterceptMode"`
+	Intercept     bool     `json:"Intercept"`
+	InterceptOpts []string `json:"InterceptOpts"`
+	ForceL4       bool     `json:"ForceL4"`
+	ForceL7       bool     `json:"ForceL7"`
+	Type          string   `json:"VStype"`
+	Protocol      string   `json:"Protocol"`
 }
 
 type ApiPayLoad struct {
@@ -45,27 +50,37 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 	switch u.CMD {
 	case "addvs":
 		return json.Marshal(&struct {
-			Address  string `json:"vs"`
-			Port     string `json:"port"`
-			Protocol string `json:"prot"`
-			ApiKey   string `json:"apikey"`
-			CMD      string `json:"cmd"`
-			NickName string `json:"NickName"`
-			Enable   bool   `json:"Enable"`
-			Type     string `json:"VStype"`
-			ForceL4  bool   `json:"ForceL4"`
-			ForceL7  bool   `json:"ForceL7"`
+			ApiKey        string   `json:"apikey"`
+			CMD           string   `json:"cmd"`
+			Address       string   `json:"vs"`
+			Port          string   `json:"port"`
+			NickName      string   `json:"NickName"`
+			SSLReverse    bool     `json:"SSLReverse"`
+			SSLReencrypt  bool     `json:"SSLReencrypt"`
+			InterceptMode int      `json:"InterceptMode"`
+			Intercept     bool     `json:"Intercept"`
+			InterceptOpts []string `json:"InterceptOpts"`
+			Enable        bool     `json:"Enable"`
+			ForceL4       bool     `json:"ForceL4"`
+			ForceL7       bool     `json:"ForceL7"`
+			Type          string   `json:"VStype"`
+			Protocol      string   `json:"prot"`
 		}{
-			Address:  u.Address,
-			Port:     u.Port,
-			Protocol: u.Protocol,
-			ApiKey:   u.ApiKey,
-			CMD:      u.CMD,
-			NickName: u.NickName,
-			Enable:   u.Enable,
-			Type:     u.Type,
-			ForceL4:  u.ForceL4,
-			ForceL7:  u.ForceL7,
+			ApiKey:        u.ApiKey,
+			CMD:           u.CMD,
+			Address:       u.Address,
+			Port:          u.Port,
+			NickName:      u.NickName,
+			SSLReverse:    u.SSLReverse,
+			SSLReencrypt:  u.SSLReencrypt,
+			InterceptMode: u.InterceptMode,
+			Intercept:     u.Intercept,
+			InterceptOpts: u.InterceptOpts,
+			Enable:        u.Enable,
+			ForceL4:       u.ForceL4,
+			ForceL7:       u.ForceL7,
+			Type:          u.Type,
+			Protocol:      u.Protocol,
 		})
 	case "delvs", "showvs":
 		return json.Marshal(&struct {
@@ -79,29 +94,39 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 		})
 	case "modvs":
 		return json.Marshal(&struct {
-			Index    int    `json:"vs"`
-			Address  string `json:"vsaddress"`
-			Port     string `json:"vsport"`
-			Protocol string `json:"prot"`
-			ApiKey   string `json:"apikey"`
-			CMD      string `json:"cmd"`
-			NickName string `json:"NickName"`
-			Enable   bool   `json:"Enable"`
-			Type     string `json:"VStype"`
-			ForceL4  bool   `json:"ForceL4"`
-			ForceL7  bool   `json:"ForceL7"`
+			ApiKey        string   `json:"apikey"`
+			CMD           string   `json:"cmd"`
+			Index         int      `json:"vs"`
+			Address       string   `json:"vsaddress"`
+			Port          string   `json:"vsport"`
+			NickName      string   `json:"NickName"`
+			SSLReverse    bool     `json:"SSLReverse"`
+			SSLReencrypt  bool     `json:"SSLReencrypt"`
+			InterceptMode int      `json:"InterceptMode"`
+			Intercept     bool     `json:"Intercept"`
+			InterceptOpts []string `json:"InterceptOpts"`
+			Enable        bool     `json:"Enable"`
+			ForceL4       bool     `json:"ForceL4"`
+			ForceL7       bool     `json:"ForceL7"`
+			Type          string   `json:"VStype"`
+			Protocol      string   `json:"prot"`
 		}{
-			Index:    u.Index,
-			Address:  u.Address,
-			Port:     u.Port,
-			Protocol: u.Protocol,
-			ApiKey:   u.ApiKey,
-			CMD:      u.CMD,
-			NickName: u.NickName,
-			Enable:   u.Enable,
-			Type:     u.Type,
-			ForceL4:  u.ForceL4,
-			ForceL7:  u.ForceL7,
+			ApiKey:        u.ApiKey,
+			CMD:           u.CMD,
+			Index:         u.Index,
+			Address:       u.Address,
+			Port:          u.Port,
+			NickName:      u.NickName,
+			SSLReverse:    u.SSLReverse,
+			SSLReencrypt:  u.SSLReencrypt,
+			InterceptMode: u.InterceptMode,
+			Intercept:     u.Intercept,
+			InterceptOpts: u.InterceptOpts,
+			Enable:        u.Enable,
+			ForceL4:       u.ForceL4,
+			ForceL7:       u.ForceL7,
+			Type:          u.Type,
+			Protocol:      u.Protocol,
 		})
 	default:
 		return nil, errors.New("Unknown CMD")
@@ -129,10 +154,15 @@ func (c *Client) GetAllVs() ([]Vs, error) {
 }
 
 func (c *Client) GetVs(index int) (*Vs, error) {
-	var vsa VsApiPayLoad
-	vsa.CMD = "showvs"
-	vsa.ApiKey = c.ApiKey
-	vsa.Index = index
+	vsa := &VsApiPayLoad{
+		Vs{
+			Index: index,
+		},
+		ApiPayLoad{
+			CMD:    "showvs",
+			ApiKey: c.ApiKey,
+		},
+	}
 	b, err := json.Marshal(vsa)
 	if err != nil {
 		return nil, err
@@ -158,17 +188,27 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 }
 
 func (c *Client) CreateVs(v *Vs) (*Vs, error) {
-	var vsa VsApiPayLoad
-	vsa.Address = v.Address
-	vsa.Port = v.Port
-	vsa.Protocol = v.Protocol
-	vsa.NickName = v.NickName
-	vsa.Enable = v.Enable
-	vsa.Type = v.Type
-	vsa.ForceL4 = v.ForceL4
-	vsa.ForceL7 = v.ForceL7
-	vsa.ApiKey = c.ApiKey
-	vsa.CMD = "addvs"
+	vsa := &VsApiPayLoad{
+		Vs{
+			Address:       v.Address,
+			Port:          v.Port,
+			NickName:      v.NickName,
+			SSLReverse:    v.SSLReverse,
+			SSLReencrypt:  v.SSLReencrypt,
+			InterceptMode: v.InterceptMode,
+			Intercept:     v.Intercept,
+			InterceptOpts: v.InterceptOpts,
+			Enable:        v.Enable,
+			ForceL4:       v.ForceL4,
+			ForceL7:       v.ForceL7,
+			Type:          v.Type,
+			Protocol:      v.Protocol,
+		},
+		ApiPayLoad{
+			ApiKey: c.ApiKey,
+			CMD:    "addvs",
+		},
+	}
 
 	b, err := json.Marshal(vsa)
 	if err != nil {
@@ -195,10 +235,15 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 }
 
 func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
-	var vsa VsApiPayLoad
-	vsa.CMD = "delvs"
-	vsa.ApiKey = c.ApiKey
-	vsa.Index = index
+	vsa := &VsApiPayLoad{
+		Vs{
+			Index: index,
+		},
+		ApiPayLoad{
+			CMD:    "delvs",
+			ApiKey: c.ApiKey,
+		},
+	}
 	b, err := json.Marshal(vsa)
 	if err != nil {
 		return nil, err
@@ -228,18 +273,28 @@ func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 }
 
 func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
-	var vsa VsApiPayLoad
-	vsa.Index = v.Index
-	vsa.Address = v.Address
-	vsa.Port = v.Port
-	vsa.Protocol = v.Protocol
-	vsa.ApiKey = c.ApiKey
-	vsa.NickName = v.NickName
-	vsa.Enable = v.Enable
-	vsa.Type = v.Type
-	vsa.ForceL4 = v.ForceL4
-	vsa.ForceL7 = v.ForceL7
-	vsa.CMD = "modvs"
+	vsa := &VsApiPayLoad{
+		Vs{
+			Index:         v.Index,
+			Address:       v.Address,
+			Port:          v.Port,
+			NickName:      v.NickName,
+			SSLReverse:    v.SSLReverse,
+			SSLReencrypt:  v.SSLReencrypt,
+			InterceptMode: v.InterceptMode,
+			Intercept:     v.Intercept,
+			InterceptOpts: v.InterceptOpts,
+			Enable:        v.Enable,
+			ForceL4:       v.ForceL4,
+			ForceL7:       v.ForceL7,
+			Type:          v.Type,
+			Protocol:      v.Protocol,
+		},
+		ApiPayLoad{
+			ApiKey: c.ApiKey,
+			CMD:    "modvs",
+		},
+	}
 
 	b, err := json.Marshal(vsa)
 	if err != nil {

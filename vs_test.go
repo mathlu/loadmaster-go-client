@@ -156,8 +156,9 @@ func TestMarshalJSON(t *testing.T) {
 	vs.Protocol = "tcp"
 	vs.ApiKey = "bar"
 	vs.CMD = "addvs"
+	vs.InterceptOpts = []string{"opnormal", "auditnone"}
 
 	ret, err := json.Marshal(vs)
 	ok(t, err)
-	equals(t, string(ret), "{\"vs\":\"192.168.1.10\",\"port\":\"888\",\"prot\":\"tcp\",\"apikey\":\"bar\",\"cmd\":\"addvs\",\"NickName\":\"\",\"Enable\":false,\"VStype\":\"\",\"ForceL4\":false,\"ForceL7\":false}")
+	equals(t, string(ret), "{\"apikey\":\"bar\",\"cmd\":\"addvs\",\"vs\":\"192.168.1.10\",\"port\":\"888\",\"NickName\":\"\",\"SSLReverse\":false,\"SSLReencrypt\":false,\"InterceptMode\":0,\"Intercept\":false,\"InterceptOpts\":[\"opnormal\",\"auditnone\"],\"Enable\":false,\"ForceL4\":false,\"ForceL7\":false,\"VStype\":\"\",\"prot\":\"tcp\"}")
 }
