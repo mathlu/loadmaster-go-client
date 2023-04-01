@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 type Vss struct {
@@ -49,22 +50,26 @@ type VsApiPayLoad struct {
 func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 	switch u.CMD {
 	case "addvs":
+		var interceptopts string
+		if len(u.InterceptOpts) > 0 {
+			interceptopts = strings.Join(u.InterceptOpts, ";")
+		}
 		return json.Marshal(&struct {
-			ApiKey        string   `json:"apikey"`
-			CMD           string   `json:"cmd"`
-			Address       string   `json:"vs"`
-			Port          string   `json:"port"`
-			NickName      string   `json:"NickName"`
-			SSLReverse    bool     `json:"SSLReverse"`
-			SSLReencrypt  bool     `json:"SSLReencrypt"`
-			InterceptMode int      `json:"InterceptMode"`
-			Intercept     bool     `json:"Intercept"`
-			InterceptOpts []string `json:"InterceptOpts"`
-			Enable        bool     `json:"Enable"`
-			ForceL4       bool     `json:"ForceL4"`
-			ForceL7       bool     `json:"ForceL7"`
-			Type          string   `json:"VStype"`
-			Protocol      string   `json:"prot"`
+			ApiKey        string `json:"apikey"`
+			CMD           string `json:"cmd"`
+			Address       string `json:"vs"`
+			Port          string `json:"port"`
+			NickName      string `json:"NickName"`
+			SSLReverse    bool   `json:"SSLReverse"`
+			SSLReencrypt  bool   `json:"SSLReencrypt"`
+			InterceptMode int    `json:"InterceptMode"`
+			Intercept     bool   `json:"Intercept"`
+			InterceptOpts string `json:"InterceptOpts"`
+			Enable        bool   `json:"Enable"`
+			ForceL4       bool   `json:"ForceL4"`
+			ForceL7       bool   `json:"ForceL7"`
+			Type          string `json:"VStype"`
+			Protocol      string `json:"prot"`
 		}{
 			ApiKey:        u.ApiKey,
 			CMD:           u.CMD,
@@ -75,7 +80,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			SSLReencrypt:  u.SSLReencrypt,
 			InterceptMode: u.InterceptMode,
 			Intercept:     u.Intercept,
-			InterceptOpts: u.InterceptOpts,
+			InterceptOpts: interceptopts,
 			Enable:        u.Enable,
 			ForceL4:       u.ForceL4,
 			ForceL7:       u.ForceL7,
@@ -93,23 +98,27 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			CMD:    u.CMD,
 		})
 	case "modvs":
+		var interceptopts string
+		if len(u.InterceptOpts) > 0 {
+			interceptopts = strings.Join(u.InterceptOpts, ";")
+		}
 		return json.Marshal(&struct {
-			ApiKey        string   `json:"apikey"`
-			CMD           string   `json:"cmd"`
-			Index         int      `json:"vs"`
-			Address       string   `json:"vsaddress"`
-			Port          string   `json:"vsport"`
-			NickName      string   `json:"NickName"`
-			SSLReverse    bool     `json:"SSLReverse"`
-			SSLReencrypt  bool     `json:"SSLReencrypt"`
-			InterceptMode int      `json:"InterceptMode"`
-			Intercept     bool     `json:"Intercept"`
-			InterceptOpts []string `json:"InterceptOpts"`
-			Enable        bool     `json:"Enable"`
-			ForceL4       bool     `json:"ForceL4"`
-			ForceL7       bool     `json:"ForceL7"`
-			Type          string   `json:"VStype"`
-			Protocol      string   `json:"prot"`
+			ApiKey        string `json:"apikey"`
+			CMD           string `json:"cmd"`
+			Index         int    `json:"vs"`
+			Address       string `json:"vsaddress"`
+			Port          string `json:"vsport"`
+			NickName      string `json:"NickName"`
+			SSLReverse    bool   `json:"SSLReverse"`
+			SSLReencrypt  bool   `json:"SSLReencrypt"`
+			InterceptMode int    `json:"InterceptMode"`
+			Intercept     bool   `json:"Intercept"`
+			InterceptOpts string `json:"InterceptOpts"`
+			Enable        bool   `json:"Enable"`
+			ForceL4       bool   `json:"ForceL4"`
+			ForceL7       bool   `json:"ForceL7"`
+			Type          string `json:"VStype"`
+			Protocol      string `json:"prot"`
 		}{
 			ApiKey:        u.ApiKey,
 			CMD:           u.CMD,
@@ -121,7 +130,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			SSLReencrypt:  u.SSLReencrypt,
 			InterceptMode: u.InterceptMode,
 			Intercept:     u.Intercept,
-			InterceptOpts: u.InterceptOpts,
+			InterceptOpts: interceptopts,
 			Enable:        u.Enable,
 			ForceL4:       u.ForceL4,
 			ForceL7:       u.ForceL7,

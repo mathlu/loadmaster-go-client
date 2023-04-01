@@ -160,5 +160,5 @@ func TestMarshalJSON(t *testing.T) {
 
 	ret, err := json.Marshal(vs)
 	ok(t, err)
-	equals(t, string(ret), "{\"apikey\":\"bar\",\"cmd\":\"addvs\",\"vs\":\"192.168.1.10\",\"port\":\"888\",\"NickName\":\"\",\"SSLReverse\":false,\"SSLReencrypt\":false,\"InterceptMode\":0,\"Intercept\":false,\"InterceptOpts\":[\"opnormal\",\"auditnone\"],\"Enable\":false,\"ForceL4\":false,\"ForceL7\":false,\"VStype\":\"\",\"prot\":\"tcp\"}")
+	equals(t, string(ret), "{\"apikey\":\"bar\",\"cmd\":\"addvs\",\"vs\":\"192.168.1.10\",\"port\":\"888\",\"NickName\":\"\",\"SSLReverse\":false,\"SSLReencrypt\":false,\"InterceptMode\":0,\"Intercept\":false,\"InterceptOpts\":\"opnormal;auditnone\",\"Enable\":false,\"ForceL4\":false,\"ForceL7\":false,\"VStype\":\"\",\"prot\":\"tcp\"}")
 }
