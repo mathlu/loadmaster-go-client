@@ -127,7 +127,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			ApiKey                  string `json:"apikey"`
 			CMD                     string `json:"cmd"`
 			Address                 string `json:"vs"`
-			Port                    string `json:"port"`
+			Port                    string `json:"vsport"`
 			NickName                string `json:"NickName,omitempty"`
 			Enable                  bool   `json:"Enable,omitempty"`
 			SSLReverse              bool   `json:"SSLReverse,omitempty"`
