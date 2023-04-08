@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 )
 
@@ -117,6 +118,52 @@ func TestCreateVs(t *testing.T) {
 
 }
 
+func TestCreateVsIntegration(t *testing.T) {
+	if os.Getenv("INTEGRATION") == "" {
+		t.Skip("skipping integration tests, set environment variable INTEGRATION")
+	}
+
+	if v := os.Getenv("LOADMASTER_SERVER"); v == "" {
+		t.Fatal("LOADMASTER_SERVER must be set for integration tests")
+	}
+
+	if v := os.Getenv("LOADMASTER_API_KEY"); v == "" {
+		t.Fatal("LOADMASTER_API_KEY must be set for integration tests")
+	}
+	client := NewClient(os.Getenv("LOADMASTER_API_KEY"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")))
+	if vi, err := client.GetVsByName("IntegrationTest"); err == nil {
+		_, err := client.DeleteVs(vi.Index)
+		if err != nil {
+			fmt.Printf("err: %v", err)
+		}
+	}
+	vs := &Vs{
+		Address:  "192.168.1.112",
+		Port:     "80",
+		NickName: "IntegrationTest",
+		Enable:   true,
+		/*	  SSLReverse:    d.Get("sslreverse").(bool),
+			  SSLReencrypt:  d.Get("sslreencrypt").(bool),
+			  InterceptMode: d.Get("interceptmode").(int),
+			  Intercept:     d.Get("intercept").(bool),
+			  ForceL4:       d.Get("forcel4").(bool), */
+		ForceL7:  true,
+		Type:     "gen",
+		Protocol: "tcp",
+	}
+	cvs, err := client.CreateVs(vs)
+	if err != nil {
+		fmt.Printf("err: %v", err)
+	}
+
+	t.Cleanup(func() {
+		_, err := client.DeleteVs(cvs.Index)
+		if err != nil {
+			fmt.Printf("err: %v", err)
+		}
+	})
+}
+
 func TestModifyVs(t *testing.T) {
 	content, err := ioutil.ReadFile("test_data/modvs.json")
 	ok(t, err)
@@ -149,6 +196,58 @@ func TestModifyVs(t *testing.T) {
 
 }
 
+func TestModifyVsIntegration(t *testing.T) {
+	if os.Getenv("INTEGRATION") == "" {
+		t.Skip("skipping integration tests, set environment variable INTEGRATION")
+	}
+
+	if v := os.Getenv("LOADMASTER_SERVER"); v == "" {
+		t.Fatal("LOADMASTER_SERVER must be set for integration tests")
+	}
+
+	if v := os.Getenv("LOADMASTER_API_KEY"); v == "" {
+		t.Fatal("LOADMASTER_API_KEY must be set for integration tests")
+	}
+	client := NewClient(os.Getenv("LOADMASTER_API_KEY"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")))
+	if vi, err := client.GetVsByName("IntegrationTest"); err == nil {
+		_, err := client.DeleteVs(vi.Index)
+		ok(t, err)
+	}
+	vs := &Vs{
+		Address:  "192.168.1.112",
+		Port:     "80",
+		NickName: "IntegrationTest",
+		Enable:   true,
+		/*	  SSLReverse:    d.Get("sslreverse").(bool),
+			  SSLReencrypt:  d.Get("sslreencrypt").(bool),
+			  InterceptMode: d.Get("interceptmode").(int),
+			  Intercept:     d.Get("intercept").(bool),
+			  ForceL4:       d.Get("forcel4").(bool), */
+		ForceL7:  true,
+		Type:     "gen",
+		Protocol: "tcp",
+	}
+	cvs, err := client.CreateVs(vs)
+	ok(t, err)
+
+	v := &Vs{
+		Index:    cvs.Index,
+		Address:  "192.168.1.215",
+		Protocol: "tcp",
+		Port:     "6443",
+	}
+
+	mvs, err := client.ModifyVs(v)
+	ok(t, err)
+
+	t.Cleanup(func() {
+		_, err := client.DeleteVs(mvs.Index)
+		if err != nil {
+			fmt.Printf("err: %v", err)
+		}
+	})
+}
+
 func TestMarshalJSON(t *testing.T) {
 	var vs VsApiPayLoad
 	vs.Address = "192.168.1.10"
@@ -160,5 +259,5 @@ func TestMarshalJSON(t *testing.T) {
 
 	ret, err := json.Marshal(vs)
 	ok(t, err)
-	equals(t, string(ret), "{\"apikey\":\"bar\",\"cmd\":\"addvs\",\"vs\":\"192.168.1.10\",\"vsport\":\"888\",\"InterceptOpts\":\"opnormal;auditnone\",\"prot\":\"tcp\"}")
+	equals(t, string(ret), "{\"apikey\":\"bar\",\"cmd\":\"addvs\",\"vs\":\"192.168.1.10\",\"port\":\"888\",\"InterceptOpts\":\"opnormal;auditnone\",\"prot\":\"tcp\"}")
 }

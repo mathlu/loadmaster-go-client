@@ -127,7 +127,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			ApiKey                  string `json:"apikey"`
 			CMD                     string `json:"cmd"`
 			Address                 string `json:"vs"`
-			Port                    string `json:"vsport"`
+			Port                    string `json:"port"`
 			NickName                string `json:"NickName,omitempty"`
 			Enable                  bool   `json:"Enable,omitempty"`
 			SSLReverse              bool   `json:"SSLReverse,omitempty"`
@@ -309,7 +309,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			CMD                     string `json:"cmd"`
 			Index                   int    `json:"vs"`
 			Address                 string `json:"vsaddress"`
-			Port                    string `json:"vsport"`
+			Port                    string `json:"port"`
 			NickName                string `json:"NickName,omitempty"`
 			Enable                  bool   `json:"Enable,omitempty"`
 			SSLReverse              bool   `json:"SSLReverse,omitempty"`
@@ -387,6 +387,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			RsMinimum               int    `json:"RsMinimum,omitempty"`
 			NumberOfRSs             int    `json:"NumberOfRSs,omitempty"`
 		}{
+			Index:                   u.Index,
 			ApiKey:                  u.ApiKey,
 			CMD:                     u.CMD,
 			Address:                 u.Address,
@@ -490,6 +491,21 @@ func (c *Client) GetAllVs() ([]Vs, error) {
 	}
 
 	return vss.VS, err
+}
+
+func (c *Client) GetVsByName(nickname string) (*Vs, error) {
+	vss, err := c.GetAllVs()
+	if err != nil {
+		return nil, err
+	}
+
+	for _, vs := range vss {
+		if vs.NickName == nickname {
+			return &vs, nil
+		}
+	}
+
+	return nil, fmt.Errorf("Virtual Service with name %s not found", nickname)
 }
 
 func (c *Client) GetVs(index int) (*Vs, error) {
