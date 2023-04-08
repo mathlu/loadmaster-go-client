@@ -13,87 +13,87 @@ type Vss struct {
 	VS []Vs
 }
 type Vs struct {
-	Status                  string   `json:"Status"`
-	Index                   int      `json:"Index"`
+	Status                  string   `json:"Status,omitempty"`
+	Index                   int      `json:"Index,omitempty"`
 	Address                 string   `json:"VSAddress"`
 	Port                    string   `json:"VSPort"`
-	Layer                   int      `json:"Layer"`
-	NickName                string   `json:"NickName"`
-	Enable                  bool     `json:"Enable"`
-	SSLReverse              bool     `json:"SSLReverse"`
-	SSLReencrypt            bool     `json:"SSLReencrypt"`
-	InterceptMode           int      `json:"InterceptMode"`
-	Intercept               bool     `json:"Intercept"`
-	InterceptOpts           []string `json:"InterceptOpts"`
-	AlertThreshold          int      `json:"AlertThreshold"`
-	OwaspOpts               []string `json:"OwaspOpts"`
-	BlockingParanoia        int      `json:"BlockingParanoia"`
-	IPReputationBlocking    bool     `json:"IPReputationBlocking"`
-	ExecutingParanoia       int      `json:"ExecutingParanoia"`
-	AnomalyScoringThreshold int      `json:"AnomalyScoringThreshold"`
-	PCRELimit               int      `json:"PCRELimit"`
-	JSONDLimit              int      `json:"JSONDLimit"`
-	BodyLimit               int      `json:"BodyLimit"`
-	Transactionlimit        int      `json:"Transactionlimit"`
-	Transparent             bool     `json:"Transparent"`
-	SubnetOriginating       bool     `json:"SubnetOriginating"`
-	ServerInit              int      `json:"ServerInit"`
-	StartTLSMode            int      `json:"StartTLSMode"`
-	Idletime                int      `json:"Idletime"`
-	Cache                   bool     `json:"Cache"`
-	Compress                bool     `json:"Compress"`
-	Verify                  int      `json:"Verify"`
-	UseforSnat              bool     `json:"UseforSnat"`
-	ForceL4                 bool     `json:"ForceL4"`
-	ForceL7                 bool     `json:"ForceL7"`
-	MultiConnect            bool     `json:"MultiConnect"`
-	ClientCert              int      `json:"ClientCert"`
-	SecurityHeaderOptions   int      `json:"SecurityHeaderOptions"`
-	SameSite                int      `json:"SameSite"`
-	VerifyBearer            bool     `json:"VerifyBearer"`
-	ErrorCode               string   `json:"ErrorCode"`
-	CheckUse11              bool     `json:"CheckUse1.1"`
-	MatchLen                int      `json:"MatchLen"`
-	CheckUseGet             int      `json:"CheckUseGet"`
-	SSLRewrite              string   `json:"SSLRewrite"`
-	Type                    string   `json:"VStype"`
-	FollowVSID              int      `json:"FollowVSID"`
+	Layer                   int      `json:"Layer,omitempty"`
+	NickName                string   `json:"NickName,omitempty"`
+	Enable                  bool     `json:"Enable,omitempty"`
+	SSLReverse              bool     `json:"SSLReverse,omitempty"`
+	SSLReencrypt            bool     `json:"SSLReencrypt,omitempty"`
+	InterceptMode           int      `json:"InterceptMode,omitempty"`
+	Intercept               bool     `json:"Intercept,omitempty"`
+	InterceptOpts           []string `json:"InterceptOpts,omitempty"`
+	AlertThreshold          int      `json:"AlertThreshold,omitempty"`
+	OwaspOpts               []string `json:"OwaspOpts,omitempty"`
+	BlockingParanoia        int      `json:"BlockingParanoia,omitempty"`
+	IPReputationBlocking    bool     `json:"IPReputationBlocking,omitempty"`
+	ExecutingParanoia       int      `json:"ExecutingParanoia,omitempty"`
+	AnomalyScoringThreshold int      `json:"AnomalyScoringThreshold,omitempty"`
+	PCRELimit               int      `json:"PCRELimit,omitempty"`
+	JSONDLimit              int      `json:"JSONDLimit,omitempty"`
+	BodyLimit               int      `json:"BodyLimit,omitempty"`
+	Transactionlimit        int      `json:"Transactionlimit,omitempty"`
+	Transparent             bool     `json:"Transparent,omitempty"`
+	SubnetOriginating       bool     `json:"SubnetOriginating,omitempty"`
+	ServerInit              int      `json:"ServerInit,omitempty"`
+	StartTLSMode            int      `json:"StartTLSMode,omitempty"`
+	Idletime                int      `json:"Idletime,omitempty"`
+	Cache                   bool     `json:"Cache,omitempty"`
+	Compress                bool     `json:"Compress,omitempty"`
+	Verify                  int      `json:"Verify,omitempty"`
+	UseforSnat              bool     `json:"UseforSnat,omitempty"`
+	ForceL4                 bool     `json:"ForceL4,omitempty"`
+	ForceL7                 bool     `json:"ForceL7,omitempty"`
+	MultiConnect            bool     `json:"MultiConnect,omitempty"`
+	ClientCert              int      `json:"ClientCert,omitempty"`
+	SecurityHeaderOptions   int      `json:"SecurityHeaderOptions,omitempty"`
+	SameSite                int      `json:"SameSite,omitempty"`
+	VerifyBearer            bool     `json:"VerifyBearer,omitempty"`
+	ErrorCode               string   `json:"ErrorCode,omitempty"`
+	CheckUse11              bool     `json:"CheckUse1.1,omitempty"`
+	MatchLen                int      `json:"MatchLen,omitempty"`
+	CheckUseGet             int      `json:"CheckUseGet,omitempty"`
+	SSLRewrite              string   `json:"SSLRewrite,omitempty"`
+	Type                    string   `json:"VStype,omitempty"`
+	FollowVSID              int      `json:"FollowVSID,omitempty"`
 	Protocol                string   `json:"Protocol"`
-	Schedule                string   `json:"Schedule"`
-	CheckType               string   `json:"CheckType"`
-	PersistTimeout          string   `json:"PersistTimeout"`
-	CheckPort               string   `json:"CheckPort"`
-	HTTPReschedule          bool     `json:"HTTPReschedule"`
-	NRules                  int      `json:"NRules"`
-	NRequestRules           int      `json:"NRequestRules"`
-	NResponseRules          int      `json:"NResponseRules"`
-	NMatchBodyRules         int      `json:"NMatchBodyRules"`
-	NPreProcessRules        int      `json:"NPreProcessRules"`
-	EspEnabled              bool     `json:"EspEnabled"`
-	InputAuthMode           int      `json:"InputAuthMode"`
-	OutputAuthMode          int      `json:"OutputAuthMode"`
-	MasterVS                int      `json:"MasterVS"`
-	MasterVSID              int      `json:"MasterVSID"`
-	IsTransparent           int      `json:"IsTransparent"`
-	AddVia                  int      `json:"AddVia"`
-	QoS                     int      `json:"QoS"`
-	TLSType                 string   `json:"TlsType"`
-	NeedHostName            bool     `json:"NeedHostName"`
-	OCSPVerify              bool     `json:"OCSPVerify"`
-	AllowHTTP2              bool     `json:"AllowHTTP2"`
-	PassCipher              bool     `json:"PassCipher"`
-	PassSni                 bool     `json:"PassSni"`
-	ChkInterval             int      `json:"ChkInterval"`
-	ChkTimeout              int      `json:"ChkTimeout"`
-	ChkRetryCount           int      `json:"ChkRetryCount"`
-	Bandwidth               int      `json:"Bandwidth"`
-	ConnsPerSecLimit        int      `json:"ConnsPerSecLimit"`
-	RequestsPerSecLimit     int      `json:"RequestsPerSecLimit"`
-	MaxConnsLimit           int      `json:"MaxConnsLimit"`
-	RefreshPersist          bool     `json:"RefreshPersist"`
-	EnhancedHealthChecks    bool     `json:"EnhancedHealthChecks"`
-	RsMinimum               int      `json:"RsMinimum"`
-	NumberOfRSs             int      `json:"NumberOfRSs"`
+	Schedule                string   `json:"Schedule,omitempty"`
+	CheckType               string   `json:"CheckType,omitempty"`
+	PersistTimeout          string   `json:"PersistTimeout,omitempty"`
+	CheckPort               string   `json:"CheckPort,omitempty"`
+	HTTPReschedule          bool     `json:"HTTPReschedule,omitempty"`
+	NRules                  int      `json:"NRules,omitempty"`
+	NRequestRules           int      `json:"NRequestRules,omitempty"`
+	NResponseRules          int      `json:"NResponseRules,omitempty"`
+	NMatchBodyRules         int      `json:"NMatchBodyRules,omitempty"`
+	NPreProcessRules        int      `json:"NPreProcessRules,omitempty"`
+	EspEnabled              bool     `json:"EspEnabled,omitempty"`
+	InputAuthMode           int      `json:"InputAuthMode,omitempty"`
+	OutputAuthMode          int      `json:"OutputAuthMode,omitempty"`
+	MasterVS                int      `json:"MasterVS,omitempty"`
+	MasterVSID              int      `json:"MasterVSID,omitempty"`
+	IsTransparent           int      `json:"IsTransparent,omitempty"`
+	AddVia                  int      `json:"AddVia,omitempty"`
+	QoS                     int      `json:"QoS,omitempty"`
+	TLSType                 string   `json:"TlsType,omitempty"`
+	NeedHostName            bool     `json:"NeedHostName,omitempty"`
+	OCSPVerify              bool     `json:"OCSPVerify,omitempty"`
+	AllowHTTP2              bool     `json:"AllowHTTP2,omitempty"`
+	PassCipher              bool     `json:"PassCipher,omitempty"`
+	PassSni                 bool     `json:"PassSni,omitempty"`
+	ChkInterval             int      `json:"ChkInterval,omitempty"`
+	ChkTimeout              int      `json:"ChkTimeout,omitempty"`
+	ChkRetryCount           int      `json:"ChkRetryCount,omitempty"`
+	Bandwidth               int      `json:"Bandwidth,omitempty"`
+	ConnsPerSecLimit        int      `json:"ConnsPerSecLimit,omitempty"`
+	RequestsPerSecLimit     int      `json:"RequestsPerSecLimit,omitempty"`
+	MaxConnsLimit           int      `json:"MaxConnsLimit,omitempty"`
+	RefreshPersist          bool     `json:"RefreshPersist,omitempty"`
+	EnhancedHealthChecks    bool     `json:"EnhancedHealthChecks,omitempty"`
+	RsMinimum               int      `json:"RsMinimum,omitempty"`
+	NumberOfRSs             int      `json:"NumberOfRSs,omitempty"`
 }
 
 type ApiPayLoad struct {
@@ -168,7 +168,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			SSLRewrite              string `json:"SSLRewrite"`
 			Type                    string `json:"VStype"`
 			FollowVSID              int    `json:"FollowVSID"`
-			Protocol                string `json:"Protocol"`
+			Protocol                string `json:"prot"`
 			Schedule                string `json:"Schedule"`
 			CheckType               string `json:"CheckType"`
 			PersistTimeout          string `json:"PersistTimeout"`
@@ -350,7 +350,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			SSLRewrite              string `json:"SSLRewrite"`
 			Type                    string `json:"VStype"`
 			FollowVSID              int    `json:"FollowVSID"`
-			Protocol                string `json:"Protocol"`
+			Protocol                string `json:"prot"`
 			Schedule                string `json:"Schedule"`
 			CheckType               string `json:"CheckType"`
 			PersistTimeout          string `json:"PersistTimeout"`
