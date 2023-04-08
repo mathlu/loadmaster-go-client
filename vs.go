@@ -550,7 +550,6 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	}
 
 	b, err := json.Marshal(vsa)
-	fmt.Println(bytes.NewBuffer(b))
 	if err != nil {
 		return nil, err
 	}
