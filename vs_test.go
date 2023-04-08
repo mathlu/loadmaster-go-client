@@ -295,13 +295,18 @@ func TestGetVsIntegration(t *testing.T) {
 }
 
 func TestMarshalJSON(t *testing.T) {
-	var vs VsApiPayLoad
-	vs.Address = "192.168.1.10"
-	vs.Port = "888"
-	vs.Protocol = "tcp"
-	vs.ApiKey = "bar"
-	vs.CMD = "addvs"
-	vs.InterceptOpts = []string{"opnormal", "auditnone"}
+	vs := &VsApiPayLoad{
+		&Vs{
+			Address:       "192.168.1.10",
+			Protocol:      "tcp",
+			Port:          "888",
+			InterceptOpts: []string{"opnormal", "auditnone"},
+		},
+		ApiPayLoad{
+			CMD:    "addvs",
+			ApiKey: "bar",
+		},
+	}
 
 	ret, err := json.Marshal(vs)
 	ok(t, err)

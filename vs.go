@@ -110,7 +110,7 @@ type ApiResponse struct {
 }
 
 type VsApiPayLoad struct {
-	Vs
+	*Vs
 	ApiPayLoad
 }
 
@@ -515,7 +515,7 @@ func (c *Client) GetVsByName(nickname string) (*Vs, error) {
 
 func (c *Client) GetVs(index int) (*Vs, error) {
 	vsa := &VsApiPayLoad{
-		Vs{
+		&Vs{
 			Index: index,
 		},
 		ApiPayLoad{
@@ -549,21 +549,7 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 
 func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	vsa := &VsApiPayLoad{
-		Vs{
-			Address:       v.Address,
-			Port:          v.Port,
-			NickName:      v.NickName,
-			SSLReverse:    v.SSLReverse,
-			SSLReencrypt:  v.SSLReencrypt,
-			InterceptMode: v.InterceptMode,
-			Intercept:     v.Intercept,
-			InterceptOpts: v.InterceptOpts,
-			Enable:        v.Enable,
-			ForceL4:       v.ForceL4,
-			ForceL7:       v.ForceL7,
-			Type:          v.Type,
-			Protocol:      v.Protocol,
-		},
+		v,
 		ApiPayLoad{
 			ApiKey: c.ApiKey,
 			CMD:    "addvs",
@@ -596,7 +582,7 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 
 func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 	vsa := &VsApiPayLoad{
-		Vs{
+		&Vs{
 			Index: index,
 		},
 		ApiPayLoad{
@@ -634,23 +620,7 @@ func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 
 func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 	vsa := &VsApiPayLoad{
-		Vs{
-			Index:         v.Index,
-			Address:       v.Address,
-			Port:          v.Port,
-			VSPort:        v.VSPort,
-			NickName:      v.NickName,
-			SSLReverse:    v.SSLReverse,
-			SSLReencrypt:  v.SSLReencrypt,
-			InterceptMode: v.InterceptMode,
-			Intercept:     v.Intercept,
-			InterceptOpts: v.InterceptOpts,
-			Enable:        v.Enable,
-			ForceL4:       v.ForceL4,
-			ForceL7:       v.ForceL7,
-			Type:          v.Type,
-			Protocol:      v.Protocol,
-		},
+		v,
 		ApiPayLoad{
 			ApiKey: c.ApiKey,
 			CMD:    "modvs",
