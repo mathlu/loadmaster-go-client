@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -16,7 +17,8 @@ type Vs struct {
 	Status                  string   `json:"Status,omitempty"`
 	Index                   int      `json:"Index,omitempty"`
 	Address                 string   `json:"VSAddress"`
-	Port                    string   `json:"VSPort"`
+	Port                    string   `json:"Port,omitempty"`
+	VSPort                  string   `json:"VSPort,omitempty"`
 	Layer                   int      `json:"Layer,omitempty"`
 	NickName                string   `json:"NickName,omitempty"`
 	Enable                  bool     `json:"Enable,omitempty"`
@@ -298,6 +300,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 	case "modvs":
 		var interceptopts string
 		var owaspopts string
+		vsport, _ := strconv.Atoi(u.VSPort)
 		if len(u.InterceptOpts) > 0 {
 			interceptopts = strings.Join(u.InterceptOpts, ";")
 		}
@@ -310,6 +313,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			Index                   int    `json:"vs"`
 			Address                 string `json:"vsaddress"`
 			Port                    string `json:"port"`
+			VSPort                  int    `json:"vsport"`
 			NickName                string `json:"NickName,omitempty"`
 			Enable                  bool   `json:"Enable,omitempty"`
 			SSLReverse              bool   `json:"SSLReverse,omitempty"`
@@ -392,6 +396,7 @@ func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
 			CMD:                     u.CMD,
 			Address:                 u.Address,
 			Port:                    u.Port,
+			VSPort:                  vsport,
 			NickName:                u.NickName,
 			SSLReverse:              u.SSLReverse,
 			SSLReencrypt:            u.SSLReencrypt,
@@ -633,6 +638,7 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 			Index:         v.Index,
 			Address:       v.Address,
 			Port:          v.Port,
+			VSPort:        v.VSPort,
 			NickName:      v.NickName,
 			SSLReverse:    v.SSLReverse,
 			SSLReencrypt:  v.SSLReencrypt,

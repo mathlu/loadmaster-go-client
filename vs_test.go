@@ -114,7 +114,7 @@ func TestCreateVs(t *testing.T) {
 
 	equals(t, vs.Address, "192.168.1.235")
 	equals(t, vs.Protocol, "tcp")
-	equals(t, vs.Port, "6443")
+	equals(t, vs.VSPort, "6443")
 
 }
 
@@ -192,7 +192,7 @@ func TestModifyVs(t *testing.T) {
 
 	equals(t, vs.Address, "192.168.1.215")
 	equals(t, vs.Protocol, "tcp")
-	equals(t, vs.Port, "6453")
+	equals(t, vs.VSPort, "6453")
 
 }
 
@@ -235,6 +235,7 @@ func TestModifyVsIntegration(t *testing.T) {
 		Address:  "192.168.1.215",
 		Protocol: "tcp",
 		Port:     "6443",
+		VSPort:   "6543",
 	}
 
 	mvs, err := client.ModifyVs(v)
@@ -242,6 +243,51 @@ func TestModifyVsIntegration(t *testing.T) {
 
 	t.Cleanup(func() {
 		_, err := client.DeleteVs(mvs.Index)
+		if err != nil {
+			fmt.Printf("err: %v", err)
+		}
+	})
+}
+
+func TestGetVsIntegration(t *testing.T) {
+	if os.Getenv("INTEGRATION") == "" {
+		t.Skip("skipping integration tests, set environment variable INTEGRATION")
+	}
+
+	if v := os.Getenv("LOADMASTER_SERVER"); v == "" {
+		t.Fatal("LOADMASTER_SERVER must be set for integration tests")
+	}
+
+	if v := os.Getenv("LOADMASTER_API_KEY"); v == "" {
+		t.Fatal("LOADMASTER_API_KEY must be set for integration tests")
+	}
+	client := NewClient(os.Getenv("LOADMASTER_API_KEY"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")))
+	if vi, err := client.GetVsByName("IntegrationTest"); err == nil {
+		_, err := client.DeleteVs(vi.Index)
+		ok(t, err)
+	}
+	vs := &Vs{
+		Address:  "192.168.1.112",
+		Port:     "80",
+		NickName: "IntegrationTest",
+		Enable:   true,
+		/*	  SSLReverse:    d.Get("sslreverse").(bool),
+			  SSLReencrypt:  d.Get("sslreencrypt").(bool),
+			  InterceptMode: d.Get("interceptmode").(int),
+			  Intercept:     d.Get("intercept").(bool),
+			  ForceL4:       d.Get("forcel4").(bool), */
+		ForceL7:  true,
+		Type:     "gen",
+		Protocol: "tcp",
+	}
+	cvs, err := client.CreateVs(vs)
+	ok(t, err)
+
+	gvs, err := client.GetVs(cvs.Index)
+	ok(t, err)
+
+	t.Cleanup(func() {
+		_, err := client.DeleteVs(gvs.Index)
 		if err != nil {
 			fmt.Printf("err: %v", err)
 		}
