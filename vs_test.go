@@ -151,13 +151,32 @@ func TestCreateVsIntegration(t *testing.T) {
 		Type:     "gen",
 		Protocol: "tcp",
 	}
-	cvs, err := client.CreateVs(vs)
+	vsc, err := client.CreateVs(vs)
+	index := vsc.Index
 	if err != nil {
 		fmt.Printf("err: %v", err)
 	}
-
+	var rss []Rs
+	rss = []Rs{
+		Rs{
+			Addr:    "192.168.1.50",
+			Port:    80,
+			VSIndex: index,
+		},
+		Rs{
+			Addr:    "192.168.1.55",
+			Port:    80,
+			VSIndex: index,
+		},
+	}
+	for _, rs := range rss {
+		_, err = client.CreateRs(rs)
+		if err != nil {
+			fmt.Printf("err: %v", err)
+		}
+	}
 	t.Cleanup(func() {
-		_, err := client.DeleteVs(cvs.Index)
+		_, err := client.DeleteVs(index)
 		if err != nil {
 			fmt.Printf("err: %v", err)
 		}
