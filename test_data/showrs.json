@@ -1,0 +1,21 @@
+{ "code": 200,
+"Rs": [
+{  "Status" : "Up",
+ "VSIndex" : 1,
+ "RsIndex" : 1,
+ "Addr" : "10.10.10.10",
+ "Port" : 8080,
+ "DnsName" : "",
+ "Forward" : "nat",
+ "Weight" : 1000,
+ "Limit" : 0,
+ "RateLimit" : 0,
+ "Follow" : 0,
+ "Enable" : true,
+ "Critical" : false,
+ "Nrules" : 0 
+ }
+]
+ ,
+  "status": "ok"
+}

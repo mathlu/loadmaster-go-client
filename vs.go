@@ -10,22 +10,6 @@ import (
 	"strings"
 )
 
-type Rs struct {
-	Status    string
-	VSIndex   int
-	RSIndex   int
-	Addr      string
-	Port      int
-	DnsName   string
-	Forward   string
-	Weight    int
-	Limit     int
-	RateLimit int
-	Follow    int
-	Enable    bool
-	Critical  bool
-	Nrules    int
-}
 type Vss struct {
 	VS []Vs
 }
@@ -129,27 +113,6 @@ type ApiResponse struct {
 type VsApiPayLoad struct {
 	*Vs
 	ApiPayLoad
-}
-
-type RsApiPayLoad struct {
-	Rs
-	ApiPayLoad
-}
-
-func (u RsApiPayLoad) MarshalJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		ApiKey  string `json:"apikey"`
-		CMD     string `json:"cmd"`
-		VSIndex int    `json:"vs"`
-		Addr    string `json:"rs"`
-		Port    int    `json:"rsport"`
-	}{
-		ApiKey:  u.ApiKey,
-		CMD:     u.CMD,
-		VSIndex: u.VSIndex,
-		Addr:    u.Addr,
-		Port:    u.Port,
-	})
 }
 
 func (u VsApiPayLoad) MarshalJSON() ([]byte, error) {
@@ -616,39 +579,6 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	}
 
 	return &vs, nil
-}
-
-func (c *Client) CreateRs(r Rs) (Rs, error) {
-	rsa := &RsApiPayLoad{
-		r,
-		ApiPayLoad{
-			ApiKey: c.ApiKey,
-			CMD:    "addrs",
-		},
-	}
-
-	b, err := json.Marshal(rsa)
-	if err != nil {
-		return Rs{}, err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
-	if err != nil {
-		return Rs{}, err
-	}
-
-	resp, err := c.doRequest(req)
-	if err != nil {
-		return Rs{}, err
-	}
-
-	var rs Rs
-	err = json.Unmarshal(resp, &rs)
-	if err != nil {
-		return Rs{}, err
-	}
-
-	return rs, nil
 }
 
 func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
