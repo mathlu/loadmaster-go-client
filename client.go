@@ -19,11 +19,6 @@ type Client struct {
 	Version    int
 }
 
-type PayLoad struct {
-	ApiKey string `json:"apikey"`
-	CMD    string `json:"cmd"`
-}
-
 type ApiResponse struct {
 	XMLName xml.Name `xml:"Response"`
 	Code    int      `json:"code" xml:"stat,attr"`

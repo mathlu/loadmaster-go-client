@@ -42,9 +42,12 @@ func TestLoadMasterClient(t *testing.T) {
 
 	defer server.Close()
 	client := Client{server.Client(), "bar", server.URL, 2}
-	payload := PayLoad{
-		ApiKey: client.ApiKey,
+	payload := struct {
+		CMD    string `json:"cmd" qs:"-"`
+		ApiKey string `json:"apikey" qs:"apikey"`
+	}{
 		CMD:    "foo",
+		ApiKey: client.ApiKey,
 	}
 
 	req, err := client.newRequest("foo", payload)
