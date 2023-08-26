@@ -129,7 +129,7 @@ func TestCreateVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/addvs.json"},
-		{1, "/access/addvs?apikey=bar&port=6443&prot=tcp&vs=192.168.1.235", "test_data/addvs.xml"},
+		{1, "/access/addvs?apikey=bar&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -153,6 +153,7 @@ func TestCreateVs(t *testing.T) {
 				Address:  "192.168.1.235",
 				Protocol: "tcp",
 				Port:     "6443",
+				Type:     "http2",
 			}
 
 			vs, err := client.CreateVs(v)
@@ -161,6 +162,7 @@ func TestCreateVs(t *testing.T) {
 			equals(t, vs.Address, "192.168.1.235")
 			equals(t, vs.Protocol, "tcp")
 			equals(t, vs.VSPort, "6443")
+			equals(t, vs.Type, "http2")
 		})
 	}
 

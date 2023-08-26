@@ -21,7 +21,7 @@ type VsListed struct {
 	Port     string   `xml:"Port"`
 	VSPort   string   `xml:"VSPort"`
 	NickName string   `xml:"NickName"`
-	Type     string   `xml:"VStype"`
+	Type     string   `json:"VSType" xml:"VStype"`
 	Protocol string   `xml:"Protocol"`
 }
 
@@ -32,7 +32,7 @@ type Vs struct {
 	Port     string   `xml:"Success>Data>Port"`
 	VSPort   string   `xml:"Success>Data>VSPort"`
 	NickName string   `xml:"Success>Data>NickName"`
-	Type     string   `xml:"Success>Data>VStype"`
+	Type     string   `json:"VSType" xml:"Success>Data>VStype"`
 	Protocol string   `xml:"Success>Data>Protocol"`
 }
 
@@ -136,8 +136,8 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 		CMD      string `json:"cmd" qs:"-"`
 		Address  string `json:"vs" qs:"vs"`
 		Port     string `json:"port" qs:"port"`
-		NickName string `json:"NickName,omitempty" qs:"NickName,omitempty"`
-		Type     string `json:"VStype,omitempty" qs:"VStype,omitempty"`
+		NickName string `json:"NickName,omitempty" qs:"nickname,omitempty"`
+		Type     string `json:"VStype,omitempty" qs:"vstype,omitempty"`
 		Protocol string `json:"prot,omitempty" qs:"prot,omitempty"`
 	}{
 		ApiKey:   c.ApiKey,

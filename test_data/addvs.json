@@ -51,7 +51,7 @@
  "MatchLen" : 0,
  "CheckUseGet" : 0,
  "SSLRewrite" : "0",
- "VStype" : "gen",
+ "VStype" : "http2",
  "FollowVSID" : 0,
  "Protocol" : "tcp",
  "Schedule" : "rr",

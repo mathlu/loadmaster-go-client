@@ -52,7 +52,7 @@
 <MatchLen>0</MatchLen>
 <CheckUseGet>0</CheckUseGet>
 <SSLRewrite>0</SSLRewrite>
-<VStype>gen</VStype>
+<VStype>http2</VStype>
 <FollowVSID>0</FollowVSID>
 <Protocol>tcp</Protocol>
 <Schedule>rr</Schedule>
