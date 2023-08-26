@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Response stat="200" code="ok">
+<Success><Data><Rs>
+<Status>Down</Status>
+<VSIndex>1</VSIndex>
+<RsIndex>1</RsIndex>
+<Addr>10.10.10.10</Addr>
+<Port>8080</Port>
+<DnsName></DnsName>
+<Forward>nat</Forward>
+<Weight>1000</Weight>
+<Limit>0</Limit>
+<RateLimit>0</RateLimit>
+<Follow>0</Follow>
+<Enable>Y</Enable>
+<Critical>N</Critical>
+<Nrules>0</Nrules>
+</Rs>
+</Data></Success>
+</Response>

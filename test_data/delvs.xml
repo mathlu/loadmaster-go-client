@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Response stat="200" code="ok">
+<Success>Command completed ok</Success>
+</Response>

@@ -3,20 +3,19 @@ package lmclient
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"errors"
 	"fmt"
-	"net/http"
 	"strconv"
 )
 
 type Rss struct {
-	RS []Rs
+	XMLName xml.Name `xml:"Response"`
+	RS      []Rs     `xml:"Success>Data>Rs"`
 }
 
 type Rs struct {
-	Status    string
-	Code      int
-	Message   string
+	XMLName   xml.Name `xml:"Rs"`
 	VSIndex   int
 	RsIndex   int
 	Rsi       string
@@ -29,86 +28,28 @@ type Rs struct {
 	Limit     int
 	RateLimit int
 	Follow    int
-	Enable    bool
-	Critical  bool
 	Nrules    int
 }
 
-type RsApiPayLoad struct {
-	*Rs
-	ApiPayLoad
-}
-
-func (u RsApiPayLoad) MarshalJSON() ([]byte, error) {
-	switch u.CMD {
-	case "addrs":
-		return json.Marshal(&struct {
-			ApiKey  string `json:"apikey"`
-			CMD     string `json:"cmd"`
-			VSIndex int    `json:"vs"`
-			RsIndex int    `json:"RsIndex,omitempty"`
-			Addr    string `json:"rs,omitempty"`
-			Port    int    `json:"rsport,omitempty"`
-			NewPort string `json:"newport,omitempty"`
-		}{
-			ApiKey:  u.ApiKey,
-			CMD:     u.CMD,
-			VSIndex: u.VSIndex,
-			RsIndex: u.RsIndex,
-			Addr:    u.Addr,
-			Port:    u.Port,
-			NewPort: u.NewPort,
-		})
-	case "modrs":
-		return json.Marshal(&struct {
-			ApiKey  string `json:"apikey"`
-			CMD     string `json:"cmd"`
-			VSIndex int    `json:"vs"`
-			Rsi     string `json:"rs"`
-			NewPort string `json:"newport"`
-		}{
-			ApiKey:  u.ApiKey,
-			CMD:     u.CMD,
-			VSIndex: u.VSIndex,
-			Rsi:     u.Rsi,
-			NewPort: u.NewPort,
-		})
-	case "showrs", "delrs":
-		return json.Marshal(&struct {
-			ApiKey  string `json:"apikey"`
-			CMD     string `json:"cmd"`
-			VSIndex int    `json:"vs"`
-			Rsi     string `json:"rs"`
-		}{
-			ApiKey:  u.ApiKey,
-			CMD:     u.CMD,
-			VSIndex: u.VSIndex,
-			Rsi:     u.Rsi,
-		})
-	default:
-		return nil, errors.New("Unknown CMD")
-
-	}
-
-}
-
 func (c *Client) CreateRs(r *Rs) (*Rs, error) {
-	rsa := &RsApiPayLoad{
-		r,
-		ApiPayLoad{
-			ApiKey: c.ApiKey,
-			CMD:    "addrs",
-		},
+	cmd := "addrs"
+	rsa := struct {
+		ApiKey  string `json:"apikey" qs:"apikey"`
+		CMD     string `json:"cmd" qs:"-"`
+		VSIndex int    `json:"vs" qs:"vs"`
+		Addr    string `json:"rs,omitempty" qs:"rs"`
+		Port    int    `json:"rsport,omitempty" qs:"rsport"`
+	}{
+		ApiKey:  c.ApiKey,
+		CMD:     cmd,
+		VSIndex: r.VSIndex,
+		Addr:    r.Addr,
+		Port:    r.Port,
 	}
 
-	b, err := json.Marshal(rsa)
+	req, err := c.newRequest(cmd, rsa)
 	if err != nil {
-		return &Rs{}, err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
-	if err != nil {
-		return &Rs{}, err
+		return nil, err
 	}
 
 	resp, err := c.doRequest(req)
@@ -117,31 +58,37 @@ func (c *Client) CreateRs(r *Rs) (*Rs, error) {
 	}
 
 	var rss Rss
-	err = json.Unmarshal(resp, &rss)
-	if err != nil {
-		return nil, err
+	if c.Version == 1 {
+		reader := bytes.NewReader(resp)
+		decoder := xml.NewDecoder(reader)
+		decoder.CharsetReader = makeCharsetReader
+		err = decoder.Decode(&rss)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err = json.Unmarshal(resp, &rss)
+		if err != nil {
+			return nil, err
+		}
 	}
-
 	return &rss.RS[0], nil
 }
 
 func (c *Client) GetRs(index int, vsindex int) (*Rs, error) {
-	rsa := &RsApiPayLoad{
-		&Rs{
-			VSIndex: vsindex,
-			Rsi:     "!" + strconv.Itoa(index),
-		},
-		ApiPayLoad{
-			CMD:    "showrs",
-			ApiKey: c.ApiKey,
-		},
+	cmd := "showrs"
+	rsa := struct {
+		VSIndex int    `json:"vs" qs:"vs"`
+		CMD     string `json:"cmd" qs:"-"`
+		ApiKey  string `json:"apikey" qs:"apikey"`
+		Rsi     string `json:"rs" qs:"rs"`
+	}{
+		VSIndex: index,
+		CMD:     cmd,
+		ApiKey:  c.ApiKey,
+		Rsi:     "!" + strconv.Itoa(index),
 	}
-	b, err := json.Marshal(rsa)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
+	req, err := c.newRequest(cmd, rsa)
 	if err != nil {
 		return nil, err
 	}
@@ -152,31 +99,38 @@ func (c *Client) GetRs(index int, vsindex int) (*Rs, error) {
 	}
 
 	var rss Rss
-	err = json.Unmarshal(resp, &rss)
-	if err != nil {
-		return nil, err
+	if c.Version == 1 {
+		reader := bytes.NewReader(resp)
+		decoder := xml.NewDecoder(reader)
+		decoder.CharsetReader = makeCharsetReader
+		err = decoder.Decode(&rss)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err = json.Unmarshal(resp, &rss)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return &rss.RS[0], nil
 }
 
 func (c *Client) DeleteRs(index int, vsindex int) (*ApiResponse, error) {
-	rsa := &RsApiPayLoad{
-		&Rs{
-			VSIndex: vsindex,
-			Rsi:     "!" + strconv.Itoa(index),
-		},
-		ApiPayLoad{
-			CMD:    "delrs",
-			ApiKey: c.ApiKey,
-		},
+	cmd := "delrs"
+	rsa := struct {
+		VSIndex int    `json:"vs" qs:"vs"`
+		CMD     string `json:"cmd" qs:"-"`
+		ApiKey  string `json:"apikey" qs:"apikey"`
+		Rsi     string `json:"rs" qs:"rs"`
+	}{
+		VSIndex: index,
+		CMD:     cmd,
+		ApiKey:  c.ApiKey,
+		Rsi:     "!" + strconv.Itoa(index),
 	}
-	b, err := json.Marshal(rsa)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
+	req, err := c.newRequest(cmd, rsa)
 	if err != nil {
 		return nil, err
 	}
@@ -185,11 +139,20 @@ func (c *Client) DeleteRs(index int, vsindex int) (*ApiResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	var ar ApiResponse
-	err = json.Unmarshal(resp, &ar)
-	if err != nil {
-		return nil, err
+	if c.Version == 1 {
+		reader := bytes.NewReader(resp)
+		decoder := xml.NewDecoder(reader)
+		decoder.CharsetReader = makeCharsetReader
+		err = decoder.Decode(&ar)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err = json.Unmarshal(resp, &ar)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if ar.Status != "ok" {
@@ -199,21 +162,23 @@ func (c *Client) DeleteRs(index int, vsindex int) (*ApiResponse, error) {
 	return &ar, nil
 }
 
-func (c *Client) ModifyRs(r *Rs) (*Rs, error) {
-	rsa := &RsApiPayLoad{
-		r,
-		ApiPayLoad{
-			ApiKey: c.ApiKey,
-			CMD:    "modrs",
-		},
+func (c *Client) ModifyRs(r *Rs) (*ApiResponse, error) {
+	cmd := "modrs"
+	rsa := struct {
+		ApiKey  string `json:"apikey" qs:"apikey"`
+		CMD     string `json:"cmd" qs:"-"`
+		VSIndex int    `json:"vs" qs:"vs"`
+		Rsi     string `json:"rs" qs:"rs"`
+		NewPort string `json:"newport" qs:"newport,omitempty"`
+	}{
+		ApiKey:  c.ApiKey,
+		CMD:     cmd,
+		VSIndex: r.VSIndex,
+		Rsi:     "!" + strconv.Itoa(r.RsIndex),
+		NewPort: r.NewPort,
 	}
 
-	b, err := json.Marshal(rsa)
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", fmt.Sprintf("%s/accessv2", c.RestUrl), bytes.NewBuffer(b))
+	req, err := c.newRequest(cmd, rsa)
 	if err != nil {
 		return nil, err
 	}
@@ -222,12 +187,25 @@ func (c *Client) ModifyRs(r *Rs) (*Rs, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	var rs Rs
-	err = json.Unmarshal(resp, &rs)
-	if err != nil {
-		return nil, err
+	var ar ApiResponse
+	if c.Version == 1 {
+		reader := bytes.NewReader(resp)
+		decoder := xml.NewDecoder(reader)
+		decoder.CharsetReader = makeCharsetReader
+		err = decoder.Decode(&ar)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		err = json.Unmarshal(resp, &ar)
+		if err != nil {
+			return nil, err
+		}
 	}
 
-	return &rs, nil
+	if ar.Status != "ok" {
+		return nil, errors.New("Code: " + fmt.Sprint(ar.Code) + " Message:" + ar.Message)
+	}
+
+	return &ar, nil
 }

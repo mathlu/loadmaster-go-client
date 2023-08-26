@@ -41,9 +41,13 @@ func TestLoadMasterClient(t *testing.T) {
 	}))
 
 	defer server.Close()
-	client := Client{server.Client(), "bar", server.URL}
+	client := Client{server.Client(), "bar", server.URL, 2}
+	payload := PayLoad{
+		ApiKey: client.ApiKey,
+		CMD:    "foo",
+	}
 
-	req, err := client.newRequest("foo")
+	req, err := client.newRequest("foo", payload)
 	ok(t, err)
 	resp, err := client.doRequest(req)
 	ok(t, err)
