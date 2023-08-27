@@ -140,9 +140,9 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	cmd := "addvs"
 
-	enable := 1
-	if !v.Enable {
-		enable = 0
+	var enable int
+	if v.Enable {
+		enable = 1
 	}
 
 	var forcel4 int
@@ -265,7 +265,7 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 
 	vsport, _ := strconv.Atoi(v.VSPort)
 
-	enable := 0
+	var enable int
 	if v.Enable {
 		enable = 1
 	}
