@@ -129,7 +129,7 @@ func TestCreateVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/addvs.json"},
-		{1, "/access/addvs?apikey=bar&enable=1&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
+		{1, "/access/addvs?Enable=Y&apikey=bar&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -241,7 +241,7 @@ func TestModifyVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/modvs.json"},
-		{1, "/access/modvs?apikey=bar&enable=1&forcel4=0&forcel7=1&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
+		{1, "/access/modvs?Enable=Y&apikey=bar&forcel4=0&forcel7=1&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {

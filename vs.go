@@ -140,9 +140,11 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	cmd := "addvs"
 
-	var enable int
+	var enable string
 	if v.Enable {
-		enable = 1
+		enable = "Y"
+	} else {
+		enable = "N"
 	}
 
 	var forcel4 int
@@ -162,7 +164,7 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 		NickName string `json:"NickName,omitempty" qs:"nickname,omitempty"`
 		Type     string `json:"VStype,omitempty" qs:"vstype,omitempty"`
 		Protocol string `json:"prot,omitempty" qs:"prot,omitempty"`
-		Enable   int    `json:"Enable,omitempty" qs:"enable"`
+		Enable   string `json:"Enable" qs:"Enable"`
 		ForceL4  int    `json:"ForceL4,omitempty" qs:"forcel4"`
 		ForceL7  int    `json:"ForceL7,omitempty" qs:"forcel7"`
 	}{
@@ -265,9 +267,11 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 
 	vsport, _ := strconv.Atoi(v.VSPort)
 
-	var enable int
+	var enable string
 	if v.Enable {
-		enable = 1
+		enable = "Y"
+	} else {
+		enable = "N"
 	}
 
 	var forcel4 int
@@ -289,7 +293,7 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 		NickName string `json:"NickName,omitempty" qs:"NickName,omitempty"`
 		Type     string `json:"VStype,omitempty" qs:"VSType,omitempty"`
 		Protocol string `json:"prot,omitempty" qs:"prot,omitempty"`
-		Enable   int    `json:"Enable,omitempty" qs:"enable"`
+		Enable   string `json:"Enable" qs:"Enable"`
 		ForceL4  int    `json:"ForceL4,omitempty" qs:"forcel4"`
 		ForceL7  int    `json:"ForceL7,omitempty" qs:"forcel7"`
 	}{
