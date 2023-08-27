@@ -162,6 +162,7 @@ func TestCreateRsIntegration(t *testing.T) {
 				NickName: "IntegrationTest" + strconv.Itoa(tc.apiversion),
 				Type:     "gen",
 				Protocol: "tcp",
+				Enable:   true,
 			}
 			vsc, err := client.CreateVs(vs)
 			if err != nil {
@@ -265,6 +266,7 @@ func TestModifyRsIntegration(t *testing.T) {
 				NickName: "IntegrationTestV" + strconv.Itoa(tc.apiversion),
 				Type:     "gen",
 				Protocol: "tcp",
+				Enable:   true,
 			}
 			cvs, err := client.CreateVs(vs)
 			ok(t, err)
@@ -335,6 +337,7 @@ func TestGetRsIntegration(t *testing.T) {
 				NickName: "IntegrationTestV" + strconv.Itoa(tc.apiversion),
 				Type:     "gen",
 				Protocol: "tcp",
+				Enable:   true,
 			}
 			cvs, err := client.CreateVs(vs)
 			ok(t, err)

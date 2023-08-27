@@ -6,6 +6,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"regexp"
 	"strconv"
 )
 
@@ -17,12 +18,7 @@ type Vss struct {
 type VsListed struct {
 	XMLName  xml.Name `xml:"VS"`
 	Index    int      `xml:"Index"`
-	Address  string   `json:"VSAddress" xml:"VSAddress"`
-	Port     string   `xml:"Port"`
-	VSPort   string   `xml:"VSPort"`
 	NickName string   `xml:"NickName"`
-	Type     string   `json:"VSType" xml:"VStype"`
-	Protocol string   `xml:"Protocol"`
 }
 
 type Vs struct {
@@ -34,6 +30,10 @@ type Vs struct {
 	NickName string   `xml:"Success>Data>NickName"`
 	Type     string   `json:"VSType" xml:"Success>Data>VStype"`
 	Protocol string   `xml:"Success>Data>Protocol"`
+	Enable   bool     `xml:"Success>Data>Enable"`
+	ForceL4  bool     `xml:"Success>Data>ForceL4"`
+	ForceL7  bool     `xml:"Success>Data>ForceL7"`
+	Layer    int      `xml:"Success>Data>Layer"`
 }
 
 func (c *Client) GetAllVs() ([]VsListed, error) {
@@ -113,7 +113,15 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 
 	var vs Vs
 	if c.Version == 1 {
-		reader := bytes.NewReader(resp)
+		content := string(resp)
+		re := regexp.MustCompile(">Y<")
+		replace_true := re.ReplaceAllString(content, ">true<")
+		re = regexp.MustCompile(">N<")
+		replaced := re.ReplaceAllString(replace_true, ">false<")
+
+		b := []byte(replaced)
+
+		reader := bytes.NewReader(b)
 		decoder := xml.NewDecoder(reader)
 		decoder.CharsetReader = makeCharsetReader
 		err = decoder.Decode(&vs)
@@ -131,6 +139,21 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 
 func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	cmd := "addvs"
+
+	enable := 1
+	if !v.Enable {
+		enable = 0
+	}
+
+	var forcel4 int
+	var forcel7 int
+	if v.Layer == 4 {
+		forcel4 = 1
+	} else {
+
+		forcel7 = 1
+	}
+
 	vsa := struct {
 		ApiKey   string `json:"apikey" qs:"apikey"`
 		CMD      string `json:"cmd" qs:"-"`
@@ -139,6 +162,9 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 		NickName string `json:"NickName,omitempty" qs:"nickname,omitempty"`
 		Type     string `json:"VStype,omitempty" qs:"vstype,omitempty"`
 		Protocol string `json:"prot,omitempty" qs:"prot,omitempty"`
+		Enable   int    `json:"Enable,omitempty" qs:"enable"`
+		ForceL4  int    `json:"ForceL4,omitempty" qs:"forcel4"`
+		ForceL7  int    `json:"ForceL7,omitempty" qs:"forcel7"`
 	}{
 		ApiKey:   c.ApiKey,
 		CMD:      cmd,
@@ -147,6 +173,9 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 		NickName: v.NickName,
 		Type:     v.Type,
 		Protocol: v.Protocol,
+		Enable:   enable,
+		ForceL4:  forcel4,
+		ForceL7:  forcel7,
 	}
 
 	req, err := c.newRequest(cmd, vsa)
@@ -161,7 +190,15 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 
 	var vs Vs
 	if c.Version == 1 {
-		reader := bytes.NewReader(resp)
+		content := string(resp)
+		re := regexp.MustCompile(">Y<")
+		replace_true := re.ReplaceAllString(content, ">true<")
+		re = regexp.MustCompile(">N<")
+		replaced := re.ReplaceAllString(replace_true, ">false<")
+
+		b := []byte(replaced)
+
+		reader := bytes.NewReader(b)
 		decoder := xml.NewDecoder(reader)
 		decoder.CharsetReader = makeCharsetReader
 		err = decoder.Decode(&vs)
@@ -225,7 +262,23 @@ func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 
 func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 	cmd := "modvs"
+
 	vsport, _ := strconv.Atoi(v.VSPort)
+
+	enable := 0
+	if v.Enable {
+		enable = 1
+	}
+
+	var forcel4 int
+	var forcel7 int
+	if v.Layer == 4 {
+		forcel4 = 1
+	} else {
+
+		forcel7 = 1
+	}
+
 	vsa := struct {
 		Index    int    `json:"vs" qs:"vs"`
 		CMD      string `json:"cmd" qs:"-"`
@@ -236,6 +289,9 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 		NickName string `json:"NickName,omitempty" qs:"NickName,omitempty"`
 		Type     string `json:"VStype,omitempty" qs:"VSType,omitempty"`
 		Protocol string `json:"prot,omitempty" qs:"prot,omitempty"`
+		Enable   int    `json:"Enable,omitempty" qs:"enable"`
+		ForceL4  int    `json:"ForceL4,omitempty" qs:"forcel4"`
+		ForceL7  int    `json:"ForceL7,omitempty" qs:"forcel7"`
 	}{
 		Index:    v.Index,
 		CMD:      cmd,
@@ -246,6 +302,9 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 		NickName: v.NickName,
 		Type:     v.Type,
 		Protocol: v.Protocol,
+		Enable:   enable,
+		ForceL4:  forcel4,
+		ForceL7:  forcel7,
 	}
 
 	req, err := c.newRequest(cmd, vsa)
@@ -260,7 +319,15 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 
 	var vs Vs
 	if c.Version == 1 {
-		reader := bytes.NewReader(resp)
+		content := string(resp)
+		re := regexp.MustCompile(">Y<")
+		replace_true := re.ReplaceAllString(content, ">true<")
+		re = regexp.MustCompile(">N<")
+		replaced := re.ReplaceAllString(replace_true, ">false<")
+
+		b := []byte(replaced)
+
+		reader := bytes.NewReader(b)
 		decoder := xml.NewDecoder(reader)
 		decoder.CharsetReader = makeCharsetReader
 		err = decoder.Decode(&vs)

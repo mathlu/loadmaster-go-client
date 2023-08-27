@@ -129,7 +129,7 @@ func TestCreateVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/addvs.json"},
-		{1, "/access/addvs?apikey=bar&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
+		{1, "/access/addvs?apikey=bar&enable=1&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -154,6 +154,8 @@ func TestCreateVs(t *testing.T) {
 				Protocol: "tcp",
 				Port:     "6443",
 				Type:     "http2",
+				Enable:   true,
+				Layer:    4,
 			}
 
 			vs, err := client.CreateVs(v)
@@ -163,6 +165,10 @@ func TestCreateVs(t *testing.T) {
 			equals(t, vs.Protocol, "tcp")
 			equals(t, vs.VSPort, "6443")
 			equals(t, vs.Type, "http2")
+			equals(t, vs.Enable, true)
+			equals(t, vs.ForceL4, true)
+			equals(t, vs.ForceL7, false)
+			equals(t, vs.Layer, 4)
 		})
 	}
 
@@ -198,35 +204,28 @@ func TestCreateVsIntegration(t *testing.T) {
 			vs := &Vs{
 				Address:  "192.168.1.112",
 				Port:     "80",
-				NickName: "IntegrationTest" + strconv.Itoa(tc.apiversion),
+				NickName: "IntegrationTestV" + strconv.Itoa(tc.apiversion),
 				Type:     "gen",
 				Protocol: "tcp",
+				Enable:   true,
+				Layer:    4,
 			}
 			vsc, err := client.CreateVs(vs)
-			index := vsc.Index
 			if err != nil {
 				fmt.Printf("err: %v", err)
 			}
-			rss := []Rs{
-				Rs{
-					Addr:    "192.168.1.50",
-					Port:    80,
-					VSIndex: index,
-				},
-				Rs{
-					Addr:    "192.168.1.55",
-					Port:    80,
-					VSIndex: index,
-				},
-			}
-			for _, rs := range rss {
-				_, err = client.CreateRs(&rs)
-				if err != nil {
-					fmt.Printf("err: %v", err)
-				}
-			}
+
+			equals(t, vsc.Address, "192.168.1.112")
+			equals(t, vsc.Protocol, "tcp")
+			equals(t, vsc.VSPort, "80")
+			equals(t, vsc.Type, "gen")
+			equals(t, vsc.Enable, true)
+			equals(t, vsc.ForceL4, true)
+			equals(t, vsc.ForceL7, false)
+			equals(t, vsc.Layer, 4)
+
 			t.Cleanup(func() {
-				_, err := client.DeleteVs(index)
+				_, err := client.DeleteVs(vsc.Index)
 				if err != nil {
 					fmt.Printf("err: %v", err)
 				}
@@ -242,7 +241,7 @@ func TestModifyVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/modvs.json"},
-		{1, "/access/modvs?apikey=bar&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
+		{1, "/access/modvs?apikey=bar&enable=1&forcel4=0&forcel7=1&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -266,6 +265,8 @@ func TestModifyVs(t *testing.T) {
 				Address:  "192.168.1.215",
 				Protocol: "tcp",
 				Port:     "6443",
+				Enable:   true,
+				Layer:    7,
 			}
 
 			vs, err := client.ModifyVs(v)
@@ -274,6 +275,11 @@ func TestModifyVs(t *testing.T) {
 			equals(t, vs.Address, "192.168.1.215")
 			equals(t, vs.Protocol, "tcp")
 			equals(t, vs.VSPort, "6453")
+			equals(t, vs.Type, "gen")
+			equals(t, vs.Enable, true)
+			equals(t, vs.ForceL4, false)
+			equals(t, vs.ForceL7, true)
+			equals(t, vs.Layer, 7)
 		})
 	}
 
@@ -307,12 +313,23 @@ func TestModifyVsIntegration(t *testing.T) {
 			vs := &Vs{
 				Address:  "192.168.1.112",
 				Port:     "80",
-				NickName: "IntegrationTest" + strconv.Itoa(tc.apiversion),
+				NickName: "IntegrationTestV" + strconv.Itoa(tc.apiversion),
 				Type:     "gen",
 				Protocol: "tcp",
+				Enable:   true,
+				Layer:    7,
 			}
 			cvs, err := client.CreateVs(vs)
 			ok(t, err)
+
+			equals(t, cvs.Address, "192.168.1.112")
+			equals(t, cvs.Protocol, "tcp")
+			equals(t, cvs.VSPort, "80")
+			equals(t, cvs.Type, "gen")
+			equals(t, cvs.Enable, true)
+			equals(t, cvs.ForceL4, false)
+			equals(t, cvs.ForceL7, true)
+			equals(t, cvs.Layer, 7)
 
 			v := &Vs{
 				Index:    cvs.Index,
@@ -320,10 +337,20 @@ func TestModifyVsIntegration(t *testing.T) {
 				Protocol: "tcp",
 				Port:     "6443",
 				VSPort:   "6543",
+				Enable:   true,
 			}
 
 			mvs, err := client.ModifyVs(v)
 			ok(t, err)
+
+			equals(t, mvs.Address, "192.168.1.215")
+			equals(t, mvs.Protocol, "tcp")
+			equals(t, mvs.VSPort, "6543")
+			equals(t, mvs.Type, "gen")
+			equals(t, mvs.Enable, true)
+			equals(t, mvs.ForceL4, false)
+			equals(t, mvs.ForceL7, true)
+			equals(t, mvs.Layer, 7)
 
 			t.Cleanup(func() {
 				_, err := client.DeleteVs(mvs.Index)
@@ -363,7 +390,7 @@ func TestGetVsIntegration(t *testing.T) {
 			vs := &Vs{
 				Address:  "192.168.1.112",
 				Port:     "80",
-				NickName: "IntegrationTest" + strconv.Itoa(tc.apiversion),
+				NickName: "IntegrationTestV" + strconv.Itoa(tc.apiversion),
 				Type:     "gen",
 				Protocol: "tcp",
 			}

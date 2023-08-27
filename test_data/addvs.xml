@@ -4,7 +4,7 @@
 <Index>1</Index>
 <VSAddress>192.168.1.235</VSAddress>
 <VSPort>6443</VSPort>
-<Layer>7</Layer>
+<Layer>4</Layer>
 <Enable>Y</Enable>
 <SSLReverse>N</SSLReverse>
 <SSLReencrypt>N</SSLReencrypt>
@@ -40,8 +40,8 @@
 <Compress>N</Compress>
 <Verify>0</Verify>
 <UseforSnat>N</UseforSnat>
-<ForceL4>N</ForceL4>
-<ForceL7>Y</ForceL7>
+<ForceL4>Y</ForceL4>
+<ForceL7>N</ForceL7>
 <MultiConnect>N</MultiConnect>
 <ClientCert>0</ClientCert>
 <SecurityHeaderOptions>0</SecurityHeaderOptions>
