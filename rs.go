@@ -34,21 +34,23 @@ type Rs struct {
 func (c *Client) CreateRs(r *Rs) (*Rs, error) {
 	cmd := "addrs"
 	rsa := struct {
-		ApiKey  string `json:"apikey" qs:"apikey"`
-		ApiUser string `json:"apiuser,omitempty" qs:"-"`
-		ApiPass string `json:"apipass,omitempty" qs:"-"`
-		CMD     string `json:"cmd" qs:"-"`
-		VSIndex int    `json:"vs" qs:"vs"`
-		Addr    string `json:"rs,omitempty" qs:"rs"`
-		Port    int    `json:"rsport,omitempty" qs:"rsport"`
+		ApiKey   string `json:"apikey" qs:"apikey"`
+		ApiUser  string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass  string `json:"apipass,omitempty" qs:"-"`
+		CMD      string `json:"cmd" qs:"-"`
+		VSIndex  int    `json:"vs" qs:"vs"`
+		Addr     string `json:"rs,omitempty" qs:"rs"`
+		Port     int    `json:"rsport,omitempty" qs:"rsport"`
+		NonLocal int    `json:"non_local", qs:"non_local"`
 	}{
-		ApiKey:  c.ApiKey,
-		ApiUser: c.ApiUser,
-		ApiPass: c.ApiPass,
-		CMD:     cmd,
-		VSIndex: r.VSIndex,
-		Addr:    r.Addr,
-		Port:    r.Port,
+		ApiKey:   c.ApiKey,
+		ApiUser:  c.ApiUser,
+		ApiPass:  c.ApiPass,
+		CMD:      cmd,
+		VSIndex:  r.VSIndex,
+		Addr:     r.Addr,
+		Port:     r.Port,
+		NonLocal: 1,
 	}
 
 	req, err := c.newRequest(cmd, rsa)
@@ -177,21 +179,23 @@ func (c *Client) DeleteRs(index int, vsindex int) (*ApiResponse, error) {
 func (c *Client) ModifyRs(r *Rs) (*ApiResponse, error) {
 	cmd := "modrs"
 	rsa := struct {
-		ApiKey  string `json:"apikey" qs:"apikey"`
-		ApiUser string `json:"apiuser,omitempty" qs:"-"`
-		ApiPass string `json:"apipass,omitempty" qs:"-"`
-		CMD     string `json:"cmd" qs:"-"`
-		VSIndex int    `json:"vs" qs:"vs"`
-		Rsi     string `json:"rs" qs:"rs"`
-		NewPort string `json:"newport" qs:"newport,omitempty"`
+		ApiKey   string `json:"apikey" qs:"apikey"`
+		ApiUser  string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass  string `json:"apipass,omitempty" qs:"-"`
+		CMD      string `json:"cmd" qs:"-"`
+		VSIndex  int    `json:"vs" qs:"vs"`
+		Rsi      string `json:"rs" qs:"rs"`
+		NewPort  string `json:"newport" qs:"newport,omitempty"`
+		NonLocal int    `json:"non_local", qs:"non_local"`
 	}{
-		ApiKey:  c.ApiKey,
-		ApiUser: c.ApiUser,
-		ApiPass: c.ApiPass,
-		CMD:     cmd,
-		VSIndex: r.VSIndex,
-		Rsi:     "!" + strconv.Itoa(r.RsIndex),
-		NewPort: r.NewPort,
+		ApiKey:   c.ApiKey,
+		ApiUser:  c.ApiUser,
+		ApiPass:  c.ApiPass,
+		CMD:      cmd,
+		VSIndex:  r.VSIndex,
+		Rsi:      "!" + strconv.Itoa(r.RsIndex),
+		NewPort:  r.NewPort,
+		NonLocal: 1,
 	}
 
 	req, err := c.newRequest(cmd, rsa)

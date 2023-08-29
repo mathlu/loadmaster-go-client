@@ -92,7 +92,7 @@ func TestCreateRs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/addrs.json"},
-		{1, "/access/addrs?apikey=bar&rs=10.10.10.10&rsport=8080&vs=1", "test_data/addrs.xml"},
+		{1, "/access/addrs?apikey=bar&non_local=1&rs=10.10.10.10&rsport=8080&vs=1", "test_data/addrs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -199,7 +199,7 @@ func TestModifyRs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/modrs.json"},
-		{1, "/access/modrs?apikey=bar&newport=6443&rs=%211&vs=1", "test_data/modrs.xml"},
+		{1, "/access/modrs?apikey=bar&newport=6443&non_local=1&rs=%211&vs=1", "test_data/modrs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
