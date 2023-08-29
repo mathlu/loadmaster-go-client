@@ -28,6 +28,7 @@
  "AnomalyScoringThreshold" : 0,
  "PCRELimit" : 0,
  "JSONDLimit" : 0,
+ "DefaultGW": "192.168.1.1",
  "BodyLimit" : 0,
  "Transactionlimit" : 0,
  "Transparent" : false,

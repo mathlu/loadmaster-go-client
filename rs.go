@@ -41,7 +41,7 @@ func (c *Client) CreateRs(r *Rs) (*Rs, error) {
 		VSIndex  int    `json:"vs" qs:"vs"`
 		Addr     string `json:"rs,omitempty" qs:"rs"`
 		Port     int    `json:"rsport,omitempty" qs:"rsport"`
-		NonLocal int    `json:"non_local", qs:"non_local"`
+		NonLocal int    `json:"non_local" qs:"non_local"`
 	}{
 		ApiKey:   c.ApiKey,
 		ApiUser:  c.ApiUser,
@@ -186,7 +186,7 @@ func (c *Client) ModifyRs(r *Rs) (*ApiResponse, error) {
 		VSIndex  int    `json:"vs" qs:"vs"`
 		Rsi      string `json:"rs" qs:"rs"`
 		NewPort  string `json:"newport" qs:"newport,omitempty"`
-		NonLocal int    `json:"non_local", qs:"non_local"`
+		NonLocal int    `json:"non_local" qs:"non_local"`
 	}{
 		ApiKey:   c.ApiKey,
 		ApiUser:  c.ApiUser,

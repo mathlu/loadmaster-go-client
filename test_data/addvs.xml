@@ -23,6 +23,7 @@
 <Opt>reqdatadisable</Opt>
 <Opt>resdatadisable</Opt>
 </OwaspOpts>
+<DefaultGW>192.168.1.1</DefaultGW>
 <BlockingParanoia>0</BlockingParanoia>
 <IPReputationBlocking>N</IPReputationBlocking>
 <ExecutingParanoia>0</ExecutingParanoia>

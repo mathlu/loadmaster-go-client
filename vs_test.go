@@ -129,7 +129,7 @@ func TestCreateVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/addvs.json"},
-		{1, "/access/addvs?Enable=Y&apikey=bar&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
+		{1, "/access/addvs?Enable=Y&apikey=bar&defaultgw=192.168.1.1&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -150,12 +150,13 @@ func TestCreateVs(t *testing.T) {
 			client := Client{server.Client(), "bar", "foo", "baz", server.URL, tc.apiversion}
 
 			v := &Vs{
-				Address:  "192.168.1.235",
-				Protocol: "tcp",
-				Port:     "6443",
-				Type:     "http2",
-				Enable:   true,
-				Layer:    4,
+				Address:   "192.168.1.235",
+				Protocol:  "tcp",
+				Port:      "6443",
+				Type:      "http2",
+				Enable:    true,
+				Layer:     4,
+				DefaultGW: "192.168.1.1",
 			}
 
 			vs, err := client.CreateVs(v)
@@ -168,6 +169,7 @@ func TestCreateVs(t *testing.T) {
 			equals(t, vs.Enable, true)
 			equals(t, vs.ForceL4, true)
 			equals(t, vs.ForceL7, false)
+			equals(t, vs.DefaultGW, "192.168.1.1")
 			equals(t, vs.Layer, 4)
 		})
 	}
@@ -202,13 +204,14 @@ func TestCreateVsIntegration(t *testing.T) {
 				}
 			}
 			vs := &Vs{
-				Address:  "192.168.1.112",
-				Port:     "80",
-				NickName: "IntegrationTestV" + strconv.Itoa(tc.apiversion),
-				Type:     "gen",
-				Protocol: "tcp",
-				Enable:   true,
-				Layer:    4,
+				Address:   "192.168.1.112",
+				Port:      "80",
+				NickName:  "IntegrationTestV" + strconv.Itoa(tc.apiversion),
+				Type:      "gen",
+				Protocol:  "tcp",
+				Enable:    true,
+				Layer:     4,
+				DefaultGW: "192.168.1.1",
 			}
 			vsc, err := client.CreateVs(vs)
 			if err != nil {
@@ -223,6 +226,7 @@ func TestCreateVsIntegration(t *testing.T) {
 			equals(t, vsc.ForceL4, true)
 			equals(t, vsc.ForceL7, false)
 			equals(t, vsc.Layer, 4)
+			equals(t, vsc.DefaultGW, "192.168.1.1")
 
 			t.Cleanup(func() {
 				_, err := client.DeleteVs(vsc.Index)
@@ -241,7 +245,7 @@ func TestModifyVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/modvs.json"},
-		{1, "/access/modvs?Enable=Y&apikey=bar&forcel4=0&forcel7=1&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
+		{1, "/access/modvs?Enable=Y&apikey=bar&defaultgw=192.168.1.1&forcel4=0&forcel7=1&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -261,12 +265,13 @@ func TestModifyVs(t *testing.T) {
 			defer server.Close()
 			client := Client{server.Client(), "bar", "foo", "baz", server.URL, tc.apiversion}
 			v := &Vs{
-				Index:    1,
-				Address:  "192.168.1.215",
-				Protocol: "tcp",
-				Port:     "6443",
-				Enable:   true,
-				Layer:    7,
+				Index:     1,
+				Address:   "192.168.1.215",
+				Protocol:  "tcp",
+				Port:      "6443",
+				Enable:    true,
+				Layer:     7,
+				DefaultGW: "192.168.1.1",
 			}
 
 			vs, err := client.ModifyVs(v)
@@ -279,6 +284,7 @@ func TestModifyVs(t *testing.T) {
 			equals(t, vs.Enable, true)
 			equals(t, vs.ForceL4, false)
 			equals(t, vs.ForceL7, true)
+			equals(t, vs.DefaultGW, "192.168.1.1")
 			equals(t, vs.Layer, 7)
 		})
 	}

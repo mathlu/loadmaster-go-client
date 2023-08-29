@@ -51,6 +51,7 @@
 <CheckUse1.1>N</CheckUse1.1>
 <MatchLen>0</MatchLen>
 <CheckUseGet>0</CheckUseGet>
+<DefaultGW>192.168.1.1</DefaultGW>
 <SSLRewrite>0</SSLRewrite>
 <VStype>gen</VStype>
 <FollowVSID>0</FollowVSID>

@@ -29,6 +29,7 @@
  "PCRELimit" : 0,
  "JSONDLimit" : 0,
  "BodyLimit" : 0,
+ "DefaultGW": "192.168.1.1",
  "Transactionlimit" : 0,
  "Transparent" : false,
  "SubnetOriginating" : true,
