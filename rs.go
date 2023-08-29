@@ -91,7 +91,7 @@ func (c *Client) GetRs(index int, vsindex int) (*Rs, error) {
 		ApiPass string `json:"apipass,omitempty" qs:"-"`
 		Rsi     string `json:"rs" qs:"rs"`
 	}{
-		VSIndex: index,
+		VSIndex: vsindex,
 		CMD:     cmd,
 		ApiKey:  c.ApiKey,
 		ApiUser: c.ApiUser,
@@ -137,7 +137,7 @@ func (c *Client) DeleteRs(index int, vsindex int) (*ApiResponse, error) {
 		ApiPass string `json:"apipass,omitempty" qs:"-"`
 		Rsi     string `json:"rs" qs:"rs"`
 	}{
-		VSIndex: index,
+		VSIndex: vsindex,
 		CMD:     cmd,
 		ApiKey:  c.ApiKey,
 		ApiUser: c.ApiUser,
