@@ -35,12 +35,16 @@ func (c *Client) CreateRs(r *Rs) (*Rs, error) {
 	cmd := "addrs"
 	rsa := struct {
 		ApiKey  string `json:"apikey" qs:"apikey"`
+		ApiUser string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass string `json:"apipass,omitempty" qs:"-"`
 		CMD     string `json:"cmd" qs:"-"`
 		VSIndex int    `json:"vs" qs:"vs"`
 		Addr    string `json:"rs,omitempty" qs:"rs"`
 		Port    int    `json:"rsport,omitempty" qs:"rsport"`
 	}{
 		ApiKey:  c.ApiKey,
+		ApiUser: c.ApiUser,
+		ApiPass: c.ApiPass,
 		CMD:     cmd,
 		VSIndex: r.VSIndex,
 		Addr:    r.Addr,
@@ -81,11 +85,15 @@ func (c *Client) GetRs(index int, vsindex int) (*Rs, error) {
 		VSIndex int    `json:"vs" qs:"vs"`
 		CMD     string `json:"cmd" qs:"-"`
 		ApiKey  string `json:"apikey" qs:"apikey"`
+		ApiUser string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass string `json:"apipass,omitempty" qs:"-"`
 		Rsi     string `json:"rs" qs:"rs"`
 	}{
 		VSIndex: index,
 		CMD:     cmd,
 		ApiKey:  c.ApiKey,
+		ApiUser: c.ApiUser,
+		ApiPass: c.ApiPass,
 		Rsi:     "!" + strconv.Itoa(index),
 	}
 	req, err := c.newRequest(cmd, rsa)
@@ -123,11 +131,15 @@ func (c *Client) DeleteRs(index int, vsindex int) (*ApiResponse, error) {
 		VSIndex int    `json:"vs" qs:"vs"`
 		CMD     string `json:"cmd" qs:"-"`
 		ApiKey  string `json:"apikey" qs:"apikey"`
+		ApiUser string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass string `json:"apipass,omitempty" qs:"-"`
 		Rsi     string `json:"rs" qs:"rs"`
 	}{
 		VSIndex: index,
 		CMD:     cmd,
 		ApiKey:  c.ApiKey,
+		ApiUser: c.ApiUser,
+		ApiPass: c.ApiPass,
 		Rsi:     "!" + strconv.Itoa(index),
 	}
 	req, err := c.newRequest(cmd, rsa)
@@ -166,12 +178,16 @@ func (c *Client) ModifyRs(r *Rs) (*ApiResponse, error) {
 	cmd := "modrs"
 	rsa := struct {
 		ApiKey  string `json:"apikey" qs:"apikey"`
+		ApiUser string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass string `json:"apipass,omitempty" qs:"-"`
 		CMD     string `json:"cmd" qs:"-"`
 		VSIndex int    `json:"vs" qs:"vs"`
 		Rsi     string `json:"rs" qs:"rs"`
 		NewPort string `json:"newport" qs:"newport,omitempty"`
 	}{
 		ApiKey:  c.ApiKey,
+		ApiUser: c.ApiUser,
+		ApiPass: c.ApiPass,
 		CMD:     cmd,
 		VSIndex: r.VSIndex,
 		Rsi:     "!" + strconv.Itoa(r.RsIndex),

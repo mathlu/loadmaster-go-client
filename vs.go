@@ -39,11 +39,15 @@ type Vs struct {
 func (c *Client) GetAllVs() ([]VsListed, error) {
 	cmd := "listvs"
 	payload := struct {
-		CMD    string `json:"cmd" qs:"-"`
-		ApiKey string `json:"apikey" qs:"apikey"`
+		CMD     string `json:"cmd" qs:"-"`
+		ApiKey  string `json:"apikey,omitempty" qs:"apikey,omitempty"`
+		ApiUser string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass string `json:"apipass,omitempty" qs:"-"`
 	}{
-		CMD:    cmd,
-		ApiKey: c.ApiKey,
+		CMD:     cmd,
+		ApiKey:  c.ApiKey,
+		ApiUser: c.ApiUser,
+		ApiPass: c.ApiPass,
 	}
 
 	req, err := c.newRequest("listvs", payload)
@@ -92,13 +96,17 @@ func (c *Client) GetVsByName(nickname string) (*VsListed, error) {
 func (c *Client) GetVs(index int) (*Vs, error) {
 	cmd := "showvs"
 	vsa := struct {
-		Index  int    `json:"vs" qs:"vs"`
-		CMD    string `json:"cmd" qs:"-"`
-		ApiKey string `json:"apikey" qs:"apikey"`
+		Index   int    `json:"vs" qs:"vs"`
+		CMD     string `json:"cmd" qs:"-"`
+		ApiKey  string `json:"apikey,omitempty" qs:"apikey,omitempty"`
+		ApiUser string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass string `json:"apipass,omitempty" qs:"-"`
 	}{
-		Index:  index,
-		CMD:    cmd,
-		ApiKey: c.ApiKey,
+		Index:   index,
+		CMD:     cmd,
+		ApiKey:  c.ApiKey,
+		ApiUser: c.ApiUser,
+		ApiPass: c.ApiPass,
 	}
 
 	req, err := c.newRequest(cmd, vsa)
@@ -157,7 +165,9 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	}
 
 	vsa := struct {
-		ApiKey   string `json:"apikey" qs:"apikey"`
+		ApiKey   string `json:"apikey,omitempty" qs:"apikey,omitempty"`
+		ApiUser  string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass  string `json:"apipass,omitempty" qs:"-"`
 		CMD      string `json:"cmd" qs:"-"`
 		Address  string `json:"vs" qs:"vs"`
 		Port     string `json:"port" qs:"port"`
@@ -169,6 +179,8 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 		ForceL7  int    `json:"ForceL7,omitempty" qs:"forcel7"`
 	}{
 		ApiKey:   c.ApiKey,
+		ApiUser:  c.ApiUser,
+		ApiPass:  c.ApiPass,
 		CMD:      cmd,
 		Address:  v.Address,
 		Port:     v.Port,
@@ -220,13 +232,17 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 	cmd := "delvs"
 	vsa := struct {
-		Index  int    `json:"vs" qs:"vs"`
-		CMD    string `json:"cmd" qs:"-"`
-		ApiKey string `json:"apikey" qs:"apikey"`
+		Index   int    `json:"vs" qs:"vs"`
+		CMD     string `json:"cmd" qs:"-"`
+		ApiKey  string `json:"apikey,omitempty" qs:"apikey,omitempty"`
+		ApiUser string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass string `json:"apipass,omitempty" qs:"-"`
 	}{
-		Index:  index,
-		CMD:    cmd,
-		ApiKey: c.ApiKey,
+		Index:   index,
+		CMD:     cmd,
+		ApiKey:  c.ApiKey,
+		ApiUser: c.ApiUser,
+		ApiPass: c.ApiPass,
 	}
 
 	req, err := c.newRequest(cmd, vsa)
@@ -286,7 +302,9 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 	vsa := struct {
 		Index    int    `json:"vs" qs:"vs"`
 		CMD      string `json:"cmd" qs:"-"`
-		ApiKey   string `json:"apikey" qs:"apikey"`
+		ApiKey   string `json:"apikey,omitempty" qs:"apikey,omitempty"`
+		ApiUser  string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass  string `json:"apipass,omitempty" qs:"-"`
 		Address  string `json:"vsaddress" qs:"vsaddress"`
 		Port     string `json:"port" qs:"port"`
 		VSPort   int    `json:"vsport" qs:"vsport,omitempty"`
@@ -300,6 +318,8 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 		Index:    v.Index,
 		CMD:      cmd,
 		ApiKey:   c.ApiKey,
+		ApiUser:  c.ApiUser,
+		ApiPass:  c.ApiPass,
 		Address:  v.Address,
 		Port:     v.Port,
 		VSPort:   vsport,

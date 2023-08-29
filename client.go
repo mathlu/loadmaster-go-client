@@ -15,6 +15,8 @@ import (
 type Client struct {
 	HttpClient *http.Client
 	ApiKey     string
+	ApiUser    string
+	ApiPass    string
 	RestUrl    string
 	Version    int
 }
@@ -26,22 +28,31 @@ type ApiResponse struct {
 	Status  string   `json:"status" xml:"code,attr"`
 }
 
-func NewClient(apiKey string, restUrl string, version int) *Client {
+func NewClient(apiKey string, apiUser string, apiPass string, restUrl string, version int) *Client {
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	return &Client{
 		HttpClient: http.DefaultClient,
 		ApiKey:     apiKey,
+		ApiUser:    apiUser,
+		ApiPass:    apiPass,
 		RestUrl:    restUrl,
 		Version:    version,
 	}
 }
 
 func (c *Client) newRequest(cmd string, payload interface{}) (*http.Request, error) {
+	if (c.ApiUser == "" || c.ApiPass == "") && c.ApiKey == "" {
+		err := fmt.Errorf("Missing authentication")
+		return nil, err
+	}
 	if c.Version == 1 {
 		v, _ := qs.Marshal(payload)
 		req, err := http.NewRequest("GET", fmt.Sprintf("%s/access/%s?%s", c.RestUrl, cmd, v), nil)
 		if err != nil {
 			return nil, err
+		}
+		if c.ApiUser != "" && c.ApiPass != "" {
+			req.SetBasicAuth(c.ApiUser, c.ApiPass)
 		}
 		return req, nil
 	} else {

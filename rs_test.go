@@ -35,7 +35,7 @@ func TestGetRs(t *testing.T) {
 			}))
 
 			defer server.Close()
-			client := Client{server.Client(), "bar", server.URL, tc.apiversion}
+			client := Client{server.Client(), "bar", "foo", "baz", server.URL, tc.apiversion}
 
 			rs, err := client.GetRs(1, 1)
 			ok(t, err)
@@ -72,7 +72,7 @@ func TestDelRs(t *testing.T) {
 			}))
 
 			defer server.Close()
-			client := Client{server.Client(), "bar", server.URL, tc.apiversion}
+			client := Client{server.Client(), "bar", "foo", "baz", server.URL, tc.apiversion}
 
 			ar, err := client.DeleteRs(1, 1)
 			ok(t, err)
@@ -110,7 +110,7 @@ func TestCreateRs(t *testing.T) {
 			}))
 
 			defer server.Close()
-			client := Client{server.Client(), "bar", server.URL, tc.apiversion}
+			client := Client{server.Client(), "bar", "foo", "baz", server.URL, tc.apiversion}
 
 			r := &Rs{
 				VSIndex: 1,
@@ -149,7 +149,7 @@ func TestCreateRsIntegration(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
-			client := NewClient(os.Getenv("LOADMASTER_API_KEY"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")), tc.apiversion)
+			client := NewClient(os.Getenv("LOADMASTER_API_KEY"), os.Getenv("LOADMASTER_API_USER"), os.Getenv("LOADMASTER_API_PASS"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")), tc.apiversion)
 			if vi, err := client.GetVsByName("IntegrationTestV" + strconv.Itoa(tc.apiversion)); err == nil {
 				_, err := client.DeleteVs(vi.Index)
 				if err != nil {
@@ -217,7 +217,7 @@ func TestModifyRs(t *testing.T) {
 			}))
 
 			defer server.Close()
-			client := Client{server.Client(), "bar", server.URL, tc.apiversion}
+			client := Client{server.Client(), "bar", "foo", "baz", server.URL, tc.apiversion}
 			r := &Rs{
 				VSIndex: 1,
 				RsIndex: 1,
@@ -255,7 +255,7 @@ func TestModifyRsIntegration(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
-			client := NewClient(os.Getenv("LOADMASTER_API_KEY"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")), tc.apiversion)
+			client := NewClient(os.Getenv("LOADMASTER_API_KEY"), os.Getenv("LOADMASTER_API_USER"), os.Getenv("LOADMASTER_API_PASS"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")), tc.apiversion)
 			if vi, err := client.GetVsByName("IntegrationTestV" + strconv.Itoa(tc.apiversion)); err == nil {
 				_, err := client.DeleteVs(vi.Index)
 				ok(t, err)
@@ -326,7 +326,7 @@ func TestGetRsIntegration(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
-			client := NewClient(os.Getenv("LOADMASTER_API_KEY"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")), tc.apiversion)
+			client := NewClient(os.Getenv("LOADMASTER_API_KEY"), os.Getenv("LOADMASTER_API_USER"), os.Getenv("LOADMASTER_API_PASS"), fmt.Sprintf("https://%s/", os.Getenv("LOADMASTER_SERVER")), tc.apiversion)
 			if vi, err := client.GetVsByName("IntegrationTestV" + strconv.Itoa(tc.apiversion)); err == nil {
 				_, err := client.DeleteVs(vi.Index)
 				ok(t, err)
