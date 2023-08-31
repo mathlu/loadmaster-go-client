@@ -36,7 +36,6 @@ type Vs struct {
 	Layer      int      `xml:"Success>Data>Layer"`
 	DefaultGW  string   `xml:"Success>Data>DefaultGW"`
 	CheckType  string   `xml:"Success>Data>CheckType"`
-	CheckHost  string   `xml:"Success>Data>CheckHost"`
 	CheckUrl   string   `xml:"Success>Data>CheckUrl"`
 	CheckCodes string   `xml:"Success>Data>CheckCodes"`
 	CheckPort  string   `xml:"Success>Data>CheckPort"`
@@ -185,7 +184,6 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 		ForceL7    int    `json:"ForceL7,omitempty" qs:"forcel7"`
 		DefaultGW  string `json:"DefaultGW,omitempty" qs:"defaultgw,omitempty"`
 		CheckType  string `json:"CheckType,omitempty" qs:"checktype,omitempty"`
-		CheckHost  string `json:"CheckHost,omitempty" qs:"checkhost,omitempty"`
 		CheckUrl   string `json:"CheckUrl,omitempty" qs:"checkurl,omitempty"`
 		CheckCodes string `json:"CheckCodes,omitempty" qs:"checkcodes,omitempty"`
 		CheckPort  string `json:"CheckPort,omitempty" qs:"checkport,omitempty"`
@@ -204,7 +202,6 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 		ForceL7:    forcel7,
 		DefaultGW:  v.DefaultGW,
 		CheckType:  v.CheckType,
-		CheckHost:  v.CheckHost,
 		CheckUrl:   v.CheckUrl,
 		CheckCodes: v.CheckCodes,
 		CheckPort:  v.CheckPort,
@@ -334,7 +331,6 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 		ForceL7    int    `json:"ForceL7,omitempty" qs:"forcel7"`
 		DefaultGW  string `json:"DefaultGW,omitempty" qs:"defaultgw,omitempty"`
 		CheckType  string `json:"CheckType,omitempty" qs:"checktype,omitempty"`
-		CheckHost  string `json:"CheckHost,omitempty" qs:"checkhost,omitempty"`
 		CheckUrl   string `json:"CheckUrl,omitempty" qs:"checkurl,omitempty"`
 		CheckCodes string `json:"CheckCodes,omitempty" qs:"checkcodes,omitempty"`
 		CheckPort  string `json:"CheckPort,omitempty" qs:"checkport,omitempty"`
@@ -355,7 +351,6 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 		ForceL7:    forcel7,
 		DefaultGW:  v.DefaultGW,
 		CheckType:  v.CheckType,
-		CheckHost:  v.CheckHost,
 		CheckUrl:   v.CheckUrl,
 		CheckCodes: v.CheckCodes,
 		CheckPort:  v.CheckPort,

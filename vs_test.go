@@ -129,7 +129,7 @@ func TestCreateVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/addvs.json"},
-		{1, "/access/addvs?Enable=Y&apikey=bar&checkcodes=303+606+909&checkhost=foo.bar.baz&checkport=8080&checktype=https&checkurl=%2Fhealthz&defaultgw=192.168.1.1&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
+		{1, "/access/addvs?Enable=Y&apikey=bar&checkcodes=303+606+909&checkport=8080&checktype=https&checkurl=%2Fhealthz&defaultgw=192.168.1.1&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -158,7 +158,6 @@ func TestCreateVs(t *testing.T) {
 				Layer:      4,
 				DefaultGW:  "192.168.1.1",
 				CheckType:  "https",
-				CheckHost:  "foo.bar.baz",
 				CheckUrl:   "/healthz",
 				CheckCodes: "303 606 909",
 				CheckPort:  "8080",
@@ -177,7 +176,6 @@ func TestCreateVs(t *testing.T) {
 			equals(t, vs.DefaultGW, "192.168.1.1")
 			equals(t, vs.Layer, 4)
 			equals(t, vs.CheckType, "https")
-			equals(t, vs.CheckHost, "foo.bar.baz")
 			equals(t, vs.CheckUrl, "/healthz")
 			equals(t, vs.CheckCodes, "303 606 909")
 			equals(t, vs.CheckPort, "8080")
@@ -255,7 +253,7 @@ func TestModifyVs(t *testing.T) {
 		datafile   string
 	}{
 		{2, "/accessv2", "test_data/modvs.json"},
-		{1, "/access/modvs?Enable=Y&apikey=bar&checkcodes=303+606+909&checkhost=foo.bar.baz&checkport=8080&checktype=https&checkurl=%2Fhealthz&defaultgw=192.168.1.1&forcel4=0&forcel7=1&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
+		{1, "/access/modvs?Enable=Y&apikey=bar&checkcodes=303+606+909&checkport=8080&checktype=https&checkurl=%2Fhealthz&defaultgw=192.168.1.1&forcel4=0&forcel7=1&port=6443&prot=tcp&vs=1&vsaddress=192.168.1.215", "test_data/modvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -283,7 +281,6 @@ func TestModifyVs(t *testing.T) {
 				Layer:      7,
 				DefaultGW:  "192.168.1.1",
 				CheckType:  "https",
-				CheckHost:  "foo.bar.baz",
 				CheckUrl:   "/healthz",
 				CheckCodes: "303 606 909",
 				CheckPort:  "8080",
@@ -302,7 +299,6 @@ func TestModifyVs(t *testing.T) {
 			equals(t, vs.DefaultGW, "192.168.1.1")
 			equals(t, vs.Layer, 7)
 			equals(t, vs.CheckType, "https")
-			equals(t, vs.CheckHost, "foo.bar.baz")
 			equals(t, vs.CheckUrl, "/healthz")
 			equals(t, vs.CheckCodes, "303 606 909")
 			equals(t, vs.CheckPort, "8080")
