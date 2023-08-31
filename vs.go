@@ -22,19 +22,24 @@ type VsListed struct {
 }
 
 type Vs struct {
-	XMLName   xml.Name `xml:"Response"`
-	Index     int      `xml:"Success>Data>Index"`
-	Address   string   `json:"VSAddress" xml:"Success>Data>VSAddress"`
-	Port      string   `xml:"Success>Data>Port"`
-	VSPort    string   `xml:"Success>Data>VSPort"`
-	NickName  string   `xml:"Success>Data>NickName"`
-	Type      string   `json:"VSType" xml:"Success>Data>VStype"`
-	Protocol  string   `xml:"Success>Data>Protocol"`
-	Enable    bool     `xml:"Success>Data>Enable"`
-	ForceL4   bool     `xml:"Success>Data>ForceL4"`
-	ForceL7   bool     `xml:"Success>Data>ForceL7"`
-	Layer     int      `xml:"Success>Data>Layer"`
-	DefaultGW string   `xml:"Success>Data>DefaultGW"`
+	XMLName    xml.Name `xml:"Response"`
+	Index      int      `xml:"Success>Data>Index"`
+	Address    string   `json:"VSAddress" xml:"Success>Data>VSAddress"`
+	Port       string   `xml:"Success>Data>Port"`
+	VSPort     string   `xml:"Success>Data>VSPort"`
+	NickName   string   `xml:"Success>Data>NickName"`
+	Type       string   `json:"VSType" xml:"Success>Data>VStype"`
+	Protocol   string   `xml:"Success>Data>Protocol"`
+	Enable     bool     `xml:"Success>Data>Enable"`
+	ForceL4    bool     `xml:"Success>Data>ForceL4"`
+	ForceL7    bool     `xml:"Success>Data>ForceL7"`
+	Layer      int      `xml:"Success>Data>Layer"`
+	DefaultGW  string   `xml:"Success>Data>DefaultGW"`
+	CheckType  string   `xml:"Success>Data>CheckType"`
+	CheckHost  string   `xml:"Success>Data>CheckHost"`
+	CheckUrl   string   `xml:"Success>Data>CheckUrl"`
+	CheckCodes string   `xml:"Success>Data>CheckCodes"`
+	CheckPort  string   `xml:"Success>Data>CheckPort"`
 }
 
 func (c *Client) GetAllVs() ([]VsListed, error) {
@@ -166,33 +171,43 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 	}
 
 	vsa := struct {
-		ApiKey    string `json:"apikey,omitempty" qs:"apikey,omitempty"`
-		ApiUser   string `json:"apiuser,omitempty" qs:"-"`
-		ApiPass   string `json:"apipass,omitempty" qs:"-"`
-		CMD       string `json:"cmd" qs:"-"`
-		Address   string `json:"vs" qs:"vs"`
-		Port      string `json:"port" qs:"port"`
-		NickName  string `json:"NickName,omitempty" qs:"nickname,omitempty"`
-		Type      string `json:"VStype,omitempty" qs:"vstype,omitempty"`
-		Protocol  string `json:"prot,omitempty" qs:"prot,omitempty"`
-		Enable    string `json:"Enable" qs:"Enable"`
-		ForceL4   int    `json:"ForceL4,omitempty" qs:"forcel4"`
-		ForceL7   int    `json:"ForceL7,omitempty" qs:"forcel7"`
-		DefaultGW string `json:"DefaultGW,omitempty" qs:"defaultgw,omitempty"`
+		ApiKey     string `json:"apikey,omitempty" qs:"apikey,omitempty"`
+		ApiUser    string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass    string `json:"apipass,omitempty" qs:"-"`
+		CMD        string `json:"cmd" qs:"-"`
+		Address    string `json:"vs" qs:"vs"`
+		Port       string `json:"port" qs:"port"`
+		NickName   string `json:"NickName,omitempty" qs:"nickname,omitempty"`
+		Type       string `json:"VStype,omitempty" qs:"vstype,omitempty"`
+		Protocol   string `json:"prot,omitempty" qs:"prot,omitempty"`
+		Enable     string `json:"Enable" qs:"Enable"`
+		ForceL4    int    `json:"ForceL4,omitempty" qs:"forcel4"`
+		ForceL7    int    `json:"ForceL7,omitempty" qs:"forcel7"`
+		DefaultGW  string `json:"DefaultGW,omitempty" qs:"defaultgw,omitempty"`
+		CheckType  string `json:"CheckType,omitempty" qs:"checktype,omitempty"`
+		CheckHost  string `json:"CheckHost,omitempty" qs:"checkhost,omitempty"`
+		CheckUrl   string `json:"CheckUrl,omitempty" qs:"checkurl,omitempty"`
+		CheckCodes string `json:"CheckCodes,omitempty" qs:"checkcodes,omitempty"`
+		CheckPort  string `json:"CheckPort,omitempty" qs:"checkport,omitempty"`
 	}{
-		ApiKey:    c.ApiKey,
-		ApiUser:   c.ApiUser,
-		ApiPass:   c.ApiPass,
-		CMD:       cmd,
-		Address:   v.Address,
-		Port:      v.Port,
-		NickName:  v.NickName,
-		Type:      v.Type,
-		Protocol:  v.Protocol,
-		Enable:    enable,
-		ForceL4:   forcel4,
-		ForceL7:   forcel7,
-		DefaultGW: v.DefaultGW,
+		ApiKey:     c.ApiKey,
+		ApiUser:    c.ApiUser,
+		ApiPass:    c.ApiPass,
+		CMD:        cmd,
+		Address:    v.Address,
+		Port:       v.Port,
+		NickName:   v.NickName,
+		Type:       v.Type,
+		Protocol:   v.Protocol,
+		Enable:     enable,
+		ForceL4:    forcel4,
+		ForceL7:    forcel7,
+		DefaultGW:  v.DefaultGW,
+		CheckType:  v.CheckType,
+		CheckHost:  v.CheckHost,
+		CheckUrl:   v.CheckUrl,
+		CheckCodes: v.CheckCodes,
+		CheckPort:  v.CheckPort,
 	}
 
 	req, err := c.newRequest(cmd, vsa)
@@ -303,37 +318,47 @@ func (c *Client) ModifyVs(v *Vs) (*Vs, error) {
 	}
 
 	vsa := struct {
-		Index     int    `json:"vs" qs:"vs"`
-		CMD       string `json:"cmd" qs:"-"`
-		ApiKey    string `json:"apikey,omitempty" qs:"apikey,omitempty"`
-		ApiUser   string `json:"apiuser,omitempty" qs:"-"`
-		ApiPass   string `json:"apipass,omitempty" qs:"-"`
-		Address   string `json:"vsaddress" qs:"vsaddress"`
-		Port      string `json:"port" qs:"port"`
-		VSPort    int    `json:"vsport" qs:"vsport,omitempty"`
-		NickName  string `json:"NickName,omitempty" qs:"NickName,omitempty"`
-		Type      string `json:"VStype,omitempty" qs:"VSType,omitempty"`
-		Protocol  string `json:"prot,omitempty" qs:"prot,omitempty"`
-		Enable    string `json:"Enable" qs:"Enable"`
-		ForceL4   int    `json:"ForceL4,omitempty" qs:"forcel4"`
-		ForceL7   int    `json:"ForceL7,omitempty" qs:"forcel7"`
-		DefaultGW string `json:"DefaultGW,omitempty" qs:"defaultgw,omitempty"`
+		Index      int    `json:"vs" qs:"vs"`
+		CMD        string `json:"cmd" qs:"-"`
+		ApiKey     string `json:"apikey,omitempty" qs:"apikey,omitempty"`
+		ApiUser    string `json:"apiuser,omitempty" qs:"-"`
+		ApiPass    string `json:"apipass,omitempty" qs:"-"`
+		Address    string `json:"vsaddress" qs:"vsaddress"`
+		Port       string `json:"port" qs:"port"`
+		VSPort     int    `json:"vsport" qs:"vsport,omitempty"`
+		NickName   string `json:"NickName,omitempty" qs:"NickName,omitempty"`
+		Type       string `json:"VStype,omitempty" qs:"VSType,omitempty"`
+		Protocol   string `json:"prot,omitempty" qs:"prot,omitempty"`
+		Enable     string `json:"Enable" qs:"Enable"`
+		ForceL4    int    `json:"ForceL4,omitempty" qs:"forcel4"`
+		ForceL7    int    `json:"ForceL7,omitempty" qs:"forcel7"`
+		DefaultGW  string `json:"DefaultGW,omitempty" qs:"defaultgw,omitempty"`
+		CheckType  string `json:"CheckType,omitempty" qs:"checktype,omitempty"`
+		CheckHost  string `json:"CheckHost,omitempty" qs:"checkhost,omitempty"`
+		CheckUrl   string `json:"CheckUrl,omitempty" qs:"checkurl,omitempty"`
+		CheckCodes string `json:"CheckCodes,omitempty" qs:"checkcodes,omitempty"`
+		CheckPort  string `json:"CheckPort,omitempty" qs:"checkport,omitempty"`
 	}{
-		Index:     v.Index,
-		CMD:       cmd,
-		ApiKey:    c.ApiKey,
-		ApiUser:   c.ApiUser,
-		ApiPass:   c.ApiPass,
-		Address:   v.Address,
-		Port:      v.Port,
-		VSPort:    vsport,
-		NickName:  v.NickName,
-		Type:      v.Type,
-		Protocol:  v.Protocol,
-		Enable:    enable,
-		ForceL4:   forcel4,
-		ForceL7:   forcel7,
-		DefaultGW: v.DefaultGW,
+		Index:      v.Index,
+		CMD:        cmd,
+		ApiKey:     c.ApiKey,
+		ApiUser:    c.ApiUser,
+		ApiPass:    c.ApiPass,
+		Address:    v.Address,
+		Port:       v.Port,
+		VSPort:     vsport,
+		NickName:   v.NickName,
+		Type:       v.Type,
+		Protocol:   v.Protocol,
+		Enable:     enable,
+		ForceL4:    forcel4,
+		ForceL7:    forcel7,
+		DefaultGW:  v.DefaultGW,
+		CheckType:  v.CheckType,
+		CheckHost:  v.CheckHost,
+		CheckUrl:   v.CheckUrl,
+		CheckCodes: v.CheckCodes,
+		CheckPort:  v.CheckPort,
 	}
 
 	req, err := c.newRequest(cmd, vsa)

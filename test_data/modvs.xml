@@ -57,9 +57,12 @@
 <FollowVSID>0</FollowVSID>
 <Protocol>tcp</Protocol>
 <Schedule>rr</Schedule>
-<CheckType>tcp</CheckType>
+<CheckType>https</CheckType>
 <PersistTimeout>0</PersistTimeout>
-<CheckPort>0</CheckPort>
+<CheckPort>8080</CheckPort>
+<CheckHost>foo.bar.baz</CheckHost>
+<CheckUrl>/healthz</CheckUrl>
+<CheckCodes>303 606 909</CheckCodes>
 <HTTPReschedule>N</HTTPReschedule>
 <NRules>0</NRules>
 <NRequestRules>0</NRequestRules>
