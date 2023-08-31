@@ -121,6 +121,26 @@ func (c *Client) GetVs(index int) (*Vs, error) {
 
 	resp, err := c.doRequest(req)
 	if err != nil {
+		var ar ApiResponse
+		if c.Version == 1 {
+			reader := bytes.NewReader(resp)
+			decoder := xml.NewDecoder(reader)
+			decoder.CharsetReader = makeCharsetReader
+			err = decoder.Decode(&ar)
+			if err != nil {
+				return nil, err
+			}
+			ar.Message = ar.Error
+		} else {
+			err = json.Unmarshal(resp, &ar)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if ar.Status != "ok" {
+			return nil, errors.New("Code: " + fmt.Sprint(ar.Code) + " Message: " + ar.Message)
+		}
 		return nil, err
 	}
 
@@ -287,7 +307,7 @@ func (c *Client) DeleteVs(index int) (*ApiResponse, error) {
 	}
 
 	if ar.Status != "ok" {
-		return nil, errors.New("Code: " + fmt.Sprint(ar.Code) + " Message:" + ar.Message)
+		return nil, errors.New("Code: " + fmt.Sprint(ar.Code) + " Message: " + ar.Message)
 	}
 
 	return &ar, nil

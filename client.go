@@ -25,6 +25,7 @@ type ApiResponse struct {
 	XMLName xml.Name `xml:"Response"`
 	Code    int      `json:"code" xml:"stat,attr"`
 	Message string   `json:"message" xml:"Success"`
+	Error   string   `xml:"Error"`
 	Status  string   `json:"status" xml:"code,attr"`
 }
 
@@ -82,6 +83,6 @@ func (c *Client) doRequest(req *http.Request) ([]byte, error) {
 	if res.StatusCode == http.StatusOK || res.StatusCode == http.StatusNoContent {
 		return body, err
 	} else {
-		return nil, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
+		return body, fmt.Errorf("status: %d, body: %s", res.StatusCode, body)
 	}
 }

@@ -105,6 +105,26 @@ func (c *Client) GetRs(index int, vsindex int) (*Rs, error) {
 
 	resp, err := c.doRequest(req)
 	if err != nil {
+		var ar ApiResponse
+		if c.Version == 1 {
+			reader := bytes.NewReader(resp)
+			decoder := xml.NewDecoder(reader)
+			decoder.CharsetReader = makeCharsetReader
+			err = decoder.Decode(&ar)
+			if err != nil {
+				return nil, err
+			}
+			ar.Message = ar.Error
+		} else {
+			err = json.Unmarshal(resp, &ar)
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		if ar.Status != "ok" {
+			return nil, errors.New("Code: " + fmt.Sprint(ar.Code) + " Message: " + ar.Message)
+		}
 		return nil, err
 	}
 
