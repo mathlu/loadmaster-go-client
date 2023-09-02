@@ -6,8 +6,12 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strconv"
 	"testing"
+
+	"golang.org/x/exp/slices"
 )
 
 func TestGetAllVs(t *testing.T) {
@@ -125,11 +129,11 @@ func TestDelVs(t *testing.T) {
 func TestCreateVs(t *testing.T) {
 	testCases := []struct {
 		apiversion int
-		url        string
+		url        []string
 		datafile   string
 	}{
-		{2, "/accessv2", "test_data/addvs.json"},
-		{1, "/access/addvs?Enable=Y&apikey=bar&checkcodes=303+606+909&checkport=8080&checktype=https&checkurl=%2Fhealthz&defaultgw=192.168.1.1&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "test_data/addvs.xml"},
+		{2, []string{"/accessv2"}, "test_data/addvs.json"},
+		{1, []string{"/access/addvs?Enable=Y&apikey=bar&checkcodes=303+606+909&checkport=8080&checktype=https&checkurl=%2Fhealthz&defaultgw=192.168.1.1&forcel4=1&forcel7=0&port=6443&prot=tcp&vs=192.168.1.235&vstype=http2", "/access/showvs?apikey=bar&vs=1"}, "test_data/addvs.xml"},
 	}
 	for _, tc := range testCases {
 		t.Run(fmt.Sprintf("apiversion_%d", tc.apiversion), func(t *testing.T) {
@@ -138,7 +142,12 @@ func TestCreateVs(t *testing.T) {
 			// Start a local HTTP server
 			server := httptest.NewServer(http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
 				// Test request parameters
-				equals(t, req.URL.String(), tc.url)
+				if !slices.Contains(tc.url, req.URL.String()) {
+					_, file, line, _ := runtime.Caller(1)
+					fmt.Printf("\033[31m%s:%d:\n\n\texp: %#v\n\n\tgot: %#v\033[39m\n\n", filepath.Base(file), line, tc.url, req.URL.String())
+					t.FailNow()
+				}
+
 				// Send response to be tested
 				_, err := rw.Write([]byte(content))
 				if err != nil {

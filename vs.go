@@ -6,8 +6,11 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"log"
+	"math/rand"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 type Vss struct {
@@ -39,6 +42,12 @@ type Vs struct {
 	CheckUrl   string   `xml:"Success>Data>CheckUrl"`
 	CheckCodes string   `xml:"Success>Data>CheckCodes"`
 	CheckPort  string   `xml:"Success>Data>CheckPort"`
+}
+
+func SleepRandom() {
+	rand.Seed(time.Now().UnixNano())
+	n := rand.Intn(4000)
+	time.Sleep(time.Duration(n) * time.Millisecond)
 }
 
 func (c *Client) GetAllVs() ([]VsListed, error) {
@@ -260,7 +269,18 @@ func (c *Client) CreateVs(v *Vs) (*Vs, error) {
 			return nil, err
 		}
 	}
-	return &vs, nil
+	time.Sleep(200 * time.Millisecond)
+
+	cvs, err := c.GetVs(vs.Index)
+	if err != nil {
+		if err.Error() == "Code: 422 Message: Unknown VS" {
+			log.Printf("[WARN] Newly created VS not found")
+			SleepRandom()
+			return nil, err
+		}
+		return nil, err
+	}
+	return cvs, nil
 
 }
 
